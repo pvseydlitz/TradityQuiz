@@ -6,5 +6,36 @@
 </head>
 <body>
     <h1>Hello World!</h1>
+    <div class="form-container">
+      <form name="submit-to-google-sheet">
+        <input name="Email" type="email" placeholder="Email" required />
+        <input name="Name" type="text" placeholder="First Name" />
+        <button type="submit">Subscribe</button>
+      </form>
+
+
+      <script>
+      
+      const form = document.forms['submit-to-google-sheet'];
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const form = new FormData(event.target);
+        const data = Object.fromEntries(form);
+        console.log(data);
+        let uploadData = {"data": data}
+        console.log(uploadData)
+        fetch('https://api.apispreadsheets.com/data/5333/', {
+          method: 'POST',
+          body: JSON.stringify(uploadData),
+        }).then((res) => {
+          if (res.status === 201) {
+            console.log('Success')
+          } else {
+            // ERROR
+          }
+        });
+      });
+      </script>
 </body>
 </html>
