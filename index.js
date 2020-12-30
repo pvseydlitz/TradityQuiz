@@ -1,17 +1,30 @@
 function setGroup() {
   const number = Math.floor(Math.random() * 2 + 1);
-  console.log(number);
-  setQuestions();
+  const gruppe = localStorage.getItem('gruppe');
+  if (gruppe === null) {
+    localStorage.setItem('gruppe', number);
+  }
+  console.log(gruppe);
+  getQuestions();
 }
 
-function setQuestions() {
+function getQuestions() {
   fetch('https://api.apispreadsheets.com/data/5767/').then((res) => {
     if (res.status === 200) {
-      // SUCCESS
       res
         .json()
         .then((fragenDaten) => {
-          console.log(fragenDaten);
+          const gruppe = localStorage.getItem('gruppe');
+          if (gruppe === '1') {
+            fragenDaten = fragenDaten.data.filter(
+              (frage) => frage.Gruppe === '1'
+            );
+          }
+          if (gruppe === '2') {
+            fragenDaten = fragenDaten.data.filter(
+              (frage) => frage.Gruppe === '2'
+            );
+          }
           setHTML(fragenDaten);
         })
         .catch((err) => console.log(err));
@@ -24,91 +37,78 @@ function setQuestions() {
 function setHTML(fragenDaten) {
   const form = document.getElementById('platzhalterFragen');
 
-  fragenDaten.data.forEach((frage, index) => {
+  fragenDaten.forEach((frage, index) => {
     let i = index;
     if (frage.Fragennummer !== '' && frage.Art !== 'Frage ausblenden') {
-      if (fragenDaten.data[i].Art === 'Multiple-Choice 4 Antworten') {
+      if (fragenDaten[i].Art === 'Multiple-Choice 4 Antworten') {
         let template = document
           .getElementById('4RadioButtons')
           .content.cloneNode(true);
         const frage = template.querySelector('#frage');
         frage.innerHTML =
-          fragenDaten.data[i].Fragennummer + '. ' + fragenDaten.data[i].Frage;
+          fragenDaten[i].Fragennummer + '. ' + fragenDaten[i].Frage;
         const möglichkeit1 = template.querySelector('#möglichkeit1');
-        möglichkeit1.innerHTML = fragenDaten.data[i].Antwortmöglichkeit1;
+        möglichkeit1.innerHTML = fragenDaten[i].Antwortmöglichkeit1;
         const möglichkeit2 = template.querySelector('#möglichkeit2');
-        möglichkeit2.innerHTML = fragenDaten.data[i].Antwortmöglichkeit2;
+        möglichkeit2.innerHTML = fragenDaten[i].Antwortmöglichkeit2;
         const möglichkeit3 = template.querySelector('#möglichkeit3');
-        möglichkeit3.innerHTML = fragenDaten.data[i].Antwortmöglichkeit3;
+        möglichkeit3.innerHTML = fragenDaten[i].Antwortmöglichkeit3;
         const möglichkeit4 = template.querySelector('#möglichkeit4');
-        möglichkeit4.innerHTML = fragenDaten.data[i].Antwortmöglichkeit4;
+        möglichkeit4.innerHTML = fragenDaten[i].Antwortmöglichkeit4;
 
         const radios = template.querySelectorAll('input[type=radio]');
         radios.forEach((radio, index) => {
-          radio.setAttribute(
-            'name',
-            `frage${fragenDaten.data[i].Fragennummer}`
-          );
+          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`);
           radio.setAttribute(
             'value',
-            fragenDaten.data[i][`Antwortmöglichkeit${index + 1}`]
+            fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           );
         });
 
         form.appendChild(template);
       }
-      if (fragenDaten.data[index].Art === 'Multiple-Choice 3 Antworten') {
+      if (fragenDaten[index].Art === 'Multiple-Choice 3 Antworten') {
         let template = document
           .getElementById('3RadioButtons')
           .content.cloneNode(true);
         const frage = template.querySelector('#frage');
         frage.innerHTML =
-          fragenDaten.data[index].Fragennummer +
-          '. ' +
-          fragenDaten.data[index].Frage;
+          fragenDaten[index].Fragennummer + '. ' + fragenDaten[index].Frage;
         const möglichkeit1 = template.querySelector('#möglichkeit1');
-        möglichkeit1.innerHTML = fragenDaten.data[index].Antwortmöglichkeit1;
+        möglichkeit1.innerHTML = fragenDaten[index].Antwortmöglichkeit1;
         const möglichkeit2 = template.querySelector('#möglichkeit2');
-        möglichkeit2.innerHTML = fragenDaten.data[index].Antwortmöglichkeit2;
+        möglichkeit2.innerHTML = fragenDaten[index].Antwortmöglichkeit2;
         const möglichkeit3 = template.querySelector('#möglichkeit3');
-        möglichkeit3.innerHTML = fragenDaten.data[index].Antwortmöglichkeit3;
+        möglichkeit3.innerHTML = fragenDaten[index].Antwortmöglichkeit3;
 
         const radios = template.querySelectorAll('input[type=radio]');
         radios.forEach((radio, index) => {
-          radio.setAttribute(
-            'name',
-            `frage${fragenDaten.data[i].Fragennummer}`
-          );
+          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`);
           radio.setAttribute(
             'value',
-            fragenDaten.data[i][`Antwortmöglichkeit${index + 1}`]
+            fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           );
         });
         form.appendChild(template);
       }
-      if (fragenDaten.data[index].Art === 'Multiple-Choice 2 Antworten') {
+      if (fragenDaten[index].Art === 'Multiple-Choice 2 Antworten') {
         let template = document
           .getElementById('2RadioButtons')
           .content.cloneNode(true);
         const frage = template.querySelector('#frage');
         frage.innerHTML =
-          fragenDaten.data[index].Fragennummer +
-          '. ' +
-          fragenDaten.data[index].Frage;
+          fragenDaten[index].Fragennummer + '. ' + fragenDaten[index].Frage;
         const möglichkeit1 = template.querySelector('#möglichkeit1');
-        möglichkeit1.innerHTML = fragenDaten.data[index].Antwortmöglichkeit1;
+        möglichkeit1.innerHTML = fragenDaten[index].Antwortmöglichkeit1;
         const möglichkeit2 = template.querySelector('#möglichkeit2');
-        möglichkeit2.innerHTML = fragenDaten.data[index].Antwortmöglichkeit2;
+        möglichkeit2.innerHTML = fragenDaten[index].Antwortmöglichkeit2;
 
         const radios = template.querySelectorAll('input[type=radio]');
         radios.forEach((radio, index) => {
-          radio.setAttribute(
-            'name',
-            `frage${fragenDaten.data[i].Fragennummer}`
-          );
+          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`);
           radio.setAttribute(
             'value',
-            fragenDaten.data[i][`Antwortmöglichkeit${index + 1}`]
+            fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           );
         });
         form.appendChild(template);
@@ -118,16 +118,14 @@ function setHTML(fragenDaten) {
 }
 
 const form = document.querySelector('#quizForm');
-
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   const form = new FormData(event.target);
   const data = Object.fromEntries(form);
   data.datum = new Date();
-  console.log(data);
   let uploadData = { data: data };
   console.log(uploadData);
-  fetch('https://api.apispreadsheets.com/data/5770/', {
+  fetch('https://api.apispreadsheets.com/data/5779/', {
     method: 'POST',
     body: JSON.stringify(uploadData),
   }).then((res) => {
