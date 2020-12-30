@@ -1,41 +1,201 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" />
     <title>Document</title>
-</head>
-<body>
-    <h1>Hello World!</h1>
-    <div class="form-container">
-      <form name="submit-to-google-sheet">
-        <input name="Email" type="email" placeholder="Email" required />
-        <input name="Name" type="text" placeholder="First Name" />
-        <button type="submit">Subscribe</button>
-      </form>
+  </head>
+  <body class="bg-black text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-3">One of three columns</div>
+        <div class="col-sm-6">
+          <h1 class="mt-4">Tradity Quiz 2021</h1>
+          <p>
+            Durch die Teilnahme an dem Quiz hast du die Möglichkeit, extra
+            Kapital für das Börsenspiel zu erhalten.
+          </p>
+          <form name="quiz">
+            <div class="mb-4">
+              <label for="exampleInputEmail1" class="form-label"
+                ><b>E-Mail Adresse</b></label
+              >
+              <input
+                type="text"
+                name="email"
+                class="form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+              />
+              <div id="emailHelp" class="form-text">
+                Damit dir das extra Kapital gutgeschrieben werden kann, musst du
+                hier die gleiche E-Mail Adresse angeben wie bei der App für das
+                Börsenspiel.
+              </div>
+            </div>
 
+            <div class="mb-4">
+              <label for="exampleInputPassword1" class="form-label"
+                ><b>Benutzername</b></label
+              >
+              <input
+                type="text"
+                name="benutzername"
+                class="form-control"
+                id="exampleInputPassword1"
+                aria-describedby="nutzernameHelp"
+              />
+              <div id="nutzernameHelp" class="form-text">
+                Auch der Benutzername muss mit dem aus der Börsenspiel App
+                übereinstimmen.
+              </div>
+            </div>
 
-      <script>
-      
-      const form = document.forms['submit-to-google-sheet'];
+            <div class="mb-4">
+              <p class="mb-1">
+                <b>Multiple Choice Quiz mit 4 Antwortmöglichkeiten</b>
+              </p>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Antwortmöglichkeit 1
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Antwortmöglichkeit 2
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Antwortmöglichkeit 3
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault2"
+                />
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Antwortmöglichkeit 4
+                </label>
+              </div>
+            </div>
 
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const form = new FormData(event.target);
-        const data = Object.fromEntries(form);
-        console.log(data);
-        let uploadData = {"data": data}
-        console.log(uploadData)
-        fetch('https://api.apispreadsheets.com/data/5333/', {
-          method: 'POST',
-          body: JSON.stringify(uploadData),
-        }).then((res) => {
-          if (res.status === 201) {
-            console.log('Success')
-          } else {
-            // ERROR
-          }
-        });
+            <div class="mb-4">
+              <p class="mb-1">
+                <b>Multiple Choice Quiz mit 3 Antwortmöglichkeiten</b>
+              </p>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Antwortmöglichkeit 1
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Antwortmöglichkeit 2
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Antwortmöglichkeit 3
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <p class="mb-1">
+                <b
+                  >Multiple Choice Quiz mit 2 Antwortmöglichkeiten z.B. Wahr
+                  oder Falsche Statements</b
+                >
+              </p>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Wahr
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="flexRadioDefault1"
+                />
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Falsch
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-3 form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="exampleCheck1"
+              />
+              <label class="form-check-label" for="exampleCheck1"
+                >Check me out</label
+              >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="col-sm-3">One of three columns</div>
+      </div>
+    </div>
+
+    <script src="./Bootstrap/js/bootstrap.min.js"></script>
+    <script defer src="./index.js"></script>
+    <script>
+      window.addEventListener('load', () => {
+        console.log('Seite geladen');
+        setGroup();
       });
-      </script>
-</body>
+    </script>
+  </body>
 </html>
