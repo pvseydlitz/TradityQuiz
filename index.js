@@ -25,25 +25,36 @@ function setHTML(fragenDaten) {
   const form = document.getElementById('platzhalterFragen');
 
   fragenDaten.data.forEach((frage, index) => {
-    console.log(frage);
+    let i = index;
     if (frage.Fragennummer !== '' && frage.Art !== 'Frage ausblenden') {
-      if (fragenDaten.data[index].Art === 'Multiple-Choice 4 Antworten') {
+      if (fragenDaten.data[i].Art === 'Multiple-Choice 4 Antworten') {
         let template = document
           .getElementById('4RadioButtons')
           .content.cloneNode(true);
         const frage = template.querySelector('#frage');
         frage.innerHTML =
-          fragenDaten.data[index].Fragennummer +
-          '. ' +
-          fragenDaten.data[index].Frage;
+          fragenDaten.data[i].Fragennummer + '. ' + fragenDaten.data[i].Frage;
         const möglichkeit1 = template.querySelector('#möglichkeit1');
-        möglichkeit1.innerHTML = fragenDaten.data[index].Antwortmöglichkeit1;
+        möglichkeit1.innerHTML = fragenDaten.data[i].Antwortmöglichkeit1;
         const möglichkeit2 = template.querySelector('#möglichkeit2');
-        möglichkeit2.innerHTML = fragenDaten.data[index].Antwortmöglichkeit2;
+        möglichkeit2.innerHTML = fragenDaten.data[i].Antwortmöglichkeit2;
         const möglichkeit3 = template.querySelector('#möglichkeit3');
-        möglichkeit3.innerHTML = fragenDaten.data[index].Antwortmöglichkeit3;
+        möglichkeit3.innerHTML = fragenDaten.data[i].Antwortmöglichkeit3;
         const möglichkeit4 = template.querySelector('#möglichkeit4');
-        möglichkeit4.innerHTML = fragenDaten.data[index].Antwortmöglichkeit4;
+        möglichkeit4.innerHTML = fragenDaten.data[i].Antwortmöglichkeit4;
+
+        const radios = template.querySelectorAll('input[type=radio]');
+        radios.forEach((radio, index) => {
+          radio.setAttribute(
+            'name',
+            `frage${fragenDaten.data[i].Fragennummer}`
+          );
+          radio.setAttribute(
+            'value',
+            fragenDaten.data[i][`Antwortmöglichkeit${index + 1}`]
+          );
+        });
+
         form.appendChild(template);
       }
       if (fragenDaten.data[index].Art === 'Multiple-Choice 3 Antworten') {
@@ -61,6 +72,18 @@ function setHTML(fragenDaten) {
         möglichkeit2.innerHTML = fragenDaten.data[index].Antwortmöglichkeit2;
         const möglichkeit3 = template.querySelector('#möglichkeit3');
         möglichkeit3.innerHTML = fragenDaten.data[index].Antwortmöglichkeit3;
+
+        const radios = template.querySelectorAll('input[type=radio]');
+        radios.forEach((radio, index) => {
+          radio.setAttribute(
+            'name',
+            `frage${fragenDaten.data[i].Fragennummer}`
+          );
+          radio.setAttribute(
+            'value',
+            fragenDaten.data[i][`Antwortmöglichkeit${index + 1}`]
+          );
+        });
         form.appendChild(template);
       }
       if (fragenDaten.data[index].Art === 'Multiple-Choice 2 Antworten') {
@@ -76,31 +99,42 @@ function setHTML(fragenDaten) {
         möglichkeit1.innerHTML = fragenDaten.data[index].Antwortmöglichkeit1;
         const möglichkeit2 = template.querySelector('#möglichkeit2');
         möglichkeit2.innerHTML = fragenDaten.data[index].Antwortmöglichkeit2;
+
+        const radios = template.querySelectorAll('input[type=radio]');
+        radios.forEach((radio, index) => {
+          radio.setAttribute(
+            'name',
+            `frage${fragenDaten.data[i].Fragennummer}`
+          );
+          radio.setAttribute(
+            'value',
+            fragenDaten.data[i][`Antwortmöglichkeit${index + 1}`]
+          );
+        });
         form.appendChild(template);
       }
     }
   });
 }
 
-function submitData() {
-  const form = document.forms['quiz'];
+const form = document.querySelector('#quizForm');
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const form = new FormData(event.target);
-    const data = Object.fromEntries(form);
-    console.log(data);
-    let uploadData = { data: data };
-    console.log(uploadData);
-    fetch('https://api.apispreadsheets.com/data/5333/', {
-      method: 'POST',
-      body: JSON.stringify(uploadData),
-    }).then((res) => {
-      if (res.status === 201) {
-        console.log('Success');
-      } else {
-        // ERROR
-      }
-    });
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const form = new FormData(event.target);
+  const data = Object.fromEntries(form);
+  data.datum = new Date();
+  console.log(data);
+  let uploadData = { data: data };
+  console.log(uploadData);
+  fetch('https://api.apispreadsheets.com/data/5770/', {
+    method: 'POST',
+    body: JSON.stringify(uploadData),
+  }).then((res) => {
+    if (res.status === 201) {
+      console.log('Success');
+    } else {
+      // ERROR
+    }
   });
-}
+});
