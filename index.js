@@ -4,7 +4,6 @@ function setGroup() {
   if (gruppe === null) {
     localStorage.setItem('gruppe', number);
   }
-  console.log(gruppe);
   getQuestions();
 }
 
@@ -171,8 +170,7 @@ function showModal({
   });
   button1.addEventListener('click', () => {
     if (art === 'hochladen') {
-      uploadAnswers();
-      closeModal();
+      checkIfUserAlreadyDidQuiz();
     }
   });
 }
@@ -183,7 +181,84 @@ function closeModal() {
   modal.remove();
 }
 
-function uploadAnswers() {
+function checkIfUserAlreadyDidQuiz() {
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData);
+  const datum = new Date().toLocaleString('de-De');
+  data.datum = datum.slice(0, 10);
+  data.uhrzeit = datum.slice(12, 20);
+  let uploadData = { data: data };
+  const gruppe = localStorage.getItem('gruppe');
+  let id = '';
+  if (gruppe === '1') {
+    id = '5786';
+  }
+  if (gruppe === '2') {
+    id = '5785';
+  }
+  const benutzer = uploadData.data.benutzername;
+  const email = uploadData.data.email;
+  fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
+    if (res.status === 200) {
+      // SUCCESS
+      res
+        .json()
+        .then((data) => {
+          let resultFilteredByBenutzer = data.data.filter(
+            (zeilen) => zeilen.benutzername === benutzer
+          );
+          let resultFilteredByEmail = data.data.filter(
+            (zeilen) => zeilen.email === email
+          );
+          if (
+            resultFilteredByBenutzer.length > 1 &&
+            resultFilteredByEmail.length > 1
+          ) {
+            closeModal();
+            showModal({
+              art: 'fehler',
+              messageText:
+                'Mit disem Benutzernamen und der E-Mail Adresse wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              button1Show: false,
+              button1Text: '',
+              button2Show: true,
+              button2Text: 'Hinweis schließen',
+            });
+          } else if (resultFilteredByBenutzer.length > 1) {
+            closeModal();
+            showModal({
+              art: 'fehler',
+              messageText:
+                'Mit disem Benutzernamen wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              button1Show: false,
+              button1Text: '',
+              button2Show: true,
+              button2Text: 'Hinweis schließen',
+            });
+          } else if (resultFilteredByEmail.length > 1) {
+            closeModal();
+            showModal({
+              art: 'fehler',
+              messageText:
+                'Mit diser E-Mail Adresse wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              button1Show: false,
+              button1Text: '',
+              button2Show: true,
+              button2Text: 'Hinweis schließen',
+            });
+          } else {
+            uploadAnswers(uploadData);
+          }
+        })
+        .catch((err) => console.log(err));
+    } else {
+      // ERROR
+    }
+  });
+}
+
+function uploadAnswers(uploadData) {
+  closeModal();
   showModal({
     art: 'warten',
     messageText: 'Bitte warte kurz, deine Antworten werden ausgewertet',
@@ -192,13 +267,6 @@ function uploadAnswers() {
     button2Show: false,
     button2Text: '',
   });
-  const formData = new FormData(form);
-  const data = Object.fromEntries(formData);
-  const datum = new Date().toLocaleString('de-De');
-  data.datum = datum.slice(0, 10);
-  data.uhrzeit = datum.slice(12, 20);
-  let uploadData = { data: data };
-  console.log(uploadData);
   const gruppe = localStorage.getItem('gruppe');
   let id = '';
   if (gruppe === '1') {
@@ -212,7 +280,6 @@ function uploadAnswers() {
     body: JSON.stringify(uploadData),
   }).then((res) => {
     if (res.status === 201) {
-      console.log('Success');
       getResult(uploadData);
     } else {
       // ERROR
@@ -230,46 +297,30 @@ function getResult(uploadData) {
     id = '5783';
   }
   const benutzer = uploadData.data.benutzername;
-  const email = uploadData.data.email;
   fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
     if (res.status === 200) {
-      // SUCCESS
       res
         .json()
         .then((data) => {
-          let result = data.data;
-          result = result.filter((zeilen) => zeilen.benutzername === benutzer);
-          if (result.length > 1) {
-            closeModal();
-            showModal({
-              art: 'fehler',
-              messageText:
-                'Mit disem Benutzernamen wurde das Quiz schon einmal absolviert, deswegen kann dein Ergebnis nicht gewertet werden.',
-              button1Show: false,
-              button1Text: '',
-              button2Show: true,
-              button2Text: 'Hinweis schließen',
-            });
+          let resultFilteredByBenutzer = data.data.filter(
+            (zeilen) => zeilen.benutzername === benutzer
+          );
+
+          let messageText = '';
+          if (resultFilteredByBenutzer[0].anzahlRichtigerAntworten === '1') {
+            messageText = 'Du hast 1 Frage richtig beantwortet';
           } else {
-            let messageText = '';
-            if (result[0].anzahlRichtigerAntworten === '0') {
-              messageText = 'Du hast 0 Fragen richtig beantwortet';
-            } else if (result[0].anzahlRichtigerAntworten === '1') {
-              messageText = 'Du hast 1 Frage richtig beantwortet';
-            } else {
-              messageText = `Du hast ${result[0].anzahlRichtigerAntworten} Fragen richtig beantwortet`;
-            }
-            console.log(result);
-            closeModal();
-            showModal({
-              art: 'ergebnis',
-              messageText: messageText,
-              button1Show: false,
-              button1Text: '',
-              button2Show: true,
-              button2Text: 'Hinweis schließen',
-            });
+            messageText = `Du hast ${resultFilteredByBenutzer[0].anzahlRichtigerAntworten} Fragen richtig beantwortet`;
           }
+          closeModal();
+          showModal({
+            art: 'ergebnis',
+            messageText: messageText,
+            button1Show: false,
+            button1Text: '',
+            button2Show: true,
+            button2Text: 'Hinweis schließen',
+          });
         })
         .catch((err) => console.log(err));
     } else {
