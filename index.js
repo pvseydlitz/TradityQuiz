@@ -143,7 +143,6 @@ function showModal({
   button2Show,
   button2Text,
 }) {
-  console.log('show Modal');
   const modal = document.getElementById('modal').content.cloneNode(true);
   const message = modal.getElementById('message');
   message.innerHTML = messageText;
@@ -195,7 +194,9 @@ function uploadAnswers() {
   });
   const formData = new FormData(form);
   const data = Object.fromEntries(formData);
-  data.datum = new Date();
+  const datum = new Date().toLocaleString('de-De');
+  data.datum = datum.slice(0, 10);
+  data.uhrzeit = datum.slice(12, 20);
   let uploadData = { data: data };
   console.log(uploadData);
   const gruppe = localStorage.getItem('gruppe');
@@ -212,14 +213,14 @@ function uploadAnswers() {
   }).then((res) => {
     if (res.status === 201) {
       console.log('Success');
-      getResult();
+      getResult(uploadData);
     } else {
       // ERROR
     }
   });
 }
 
-function getResult() {
+function getResult(uploadData) {
   const gruppe = localStorage.getItem('gruppe');
   let id = '';
   if (gruppe === '1') {
@@ -228,22 +229,47 @@ function getResult() {
   if (gruppe === '2') {
     id = '5783';
   }
+  const benutzer = uploadData.data.benutzername;
+  const email = uploadData.data.email;
   fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
     if (res.status === 200) {
       // SUCCESS
       res
         .json()
         .then((data) => {
-          console.log(data.data[2].anzahlRichtigerAntworten);
-          closeModal();
-          showModal({
-            art: 'ergebnis',
-            messageText: `Du hast ${data.data[5].anzahlRichtigerAntworten} Fragen richtig beantwortet`,
-            button1Show: false,
-            button1Text: '',
-            button2Show: true,
-            button2Text: 'Modal schließen',
-          });
+          let result = data.data;
+          result = result.filter((zeilen) => zeilen.benutzername === benutzer);
+          if (result.length > 1) {
+            closeModal();
+            showModal({
+              art: 'fehler',
+              messageText:
+                'Mit disem Benutzernamen wurde das Quiz schon einmal absolviert, deswegen kann dein Ergebnis nicht gewertet werden.',
+              button1Show: false,
+              button1Text: '',
+              button2Show: true,
+              button2Text: 'Hinweis schließen',
+            });
+          } else {
+            let messageText = '';
+            if (result[0].anzahlRichtigerAntworten === '0') {
+              messageText = 'Du hast 0 Fragen richtig beantwortet';
+            } else if (result[0].anzahlRichtigerAntworten === '1') {
+              messageText = 'Du hast 1 Frage richtig beantwortet';
+            } else {
+              messageText = `Du hast ${result[0].anzahlRichtigerAntworten} Fragen richtig beantwortet`;
+            }
+            console.log(result);
+            closeModal();
+            showModal({
+              art: 'ergebnis',
+              messageText: messageText,
+              button1Show: false,
+              button1Text: '',
+              button2Show: true,
+              button2Text: 'Hinweis schließen',
+            });
+          }
         })
         .catch((err) => console.log(err));
     } else {
