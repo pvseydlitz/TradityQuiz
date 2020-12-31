@@ -8,6 +8,7 @@ function setGroup() {
   getQuestions();
 }
 
+//Fragen werden von Google Sheets geladen
 function getQuestions() {
   fetch('https://api.apispreadsheets.com/data/5767/').then((res) => {
     if (res.status === 200) {
@@ -34,6 +35,7 @@ function getQuestions() {
   });
 }
 
+//Aus den geladenen Daten werden die Multiple-Choice Fragen gerendert
 function setHTML(fragenDaten) {
   const form = document.getElementById('platzhalterFragen');
 
@@ -117,12 +119,82 @@ function setHTML(fragenDaten) {
   });
 }
 
+//Bei Klick auf den Submit Button wird das Modal zur Bestätigung angezeigt
 const form = document.querySelector('#quizForm');
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-  showModal();
-  /* const form = new FormData(event.target);
-  const data = Object.fromEntries(form);
+  showModal({
+    art: 'hochladen',
+    messageText:
+      'Möchtest du deine Antworten wirklich abschicken? Du hast nur einmal die Möglichkeit am Quiz teilzunehmen.',
+    button1Show: true,
+    button1Text: 'Ja',
+    button2Show: true,
+    button2Text: 'Nein',
+  });
+});
+
+//Diese Funktion rendert das Modal
+function showModal({
+  art,
+  messageText,
+  button1Show,
+  button1Text,
+  button2Show,
+  button2Text,
+}) {
+  console.log('show Modal');
+  const modal = document.getElementById('modal').content.cloneNode(true);
+  const message = modal.getElementById('message');
+  message.innerHTML = messageText;
+  const button1 = modal.getElementById('button1');
+  if (button1Show === true) {
+    button1.innerHTML = button1Text;
+  } else {
+    button1.remove();
+  }
+  const button2 = modal.getElementById('button2');
+  if (button2Show === true) {
+    button2.innerHTML = button2Text;
+  } else {
+    button2.remove();
+  }
+  document.body.classList.add('confirm-alert-body-element');
+  document.body.appendChild(modal);
+  const overlay = document.querySelector('.confirm-alert-overlay');
+  overlay.addEventListener('click', (event) => {
+    if (overlay === event.target) {
+      closeModal();
+    }
+  });
+  button2.addEventListener('click', () => {
+    closeModal();
+  });
+  button1.addEventListener('click', () => {
+    if (art === 'hochladen') {
+      uploadAnswers();
+      closeModal();
+    }
+  });
+}
+
+function closeModal() {
+  document.body.classList.remove('confirm-alert-body-element');
+  const modal = document.querySelector('.confirm-alert-overlay');
+  modal.remove();
+}
+
+function uploadAnswers() {
+  showModal({
+    art: 'warten',
+    messageText: 'Bitte warte kurz, deine Antworten werden ausgewertet',
+    button1Show: false,
+    button1Text: '',
+    button2Show: false,
+    button2Text: '',
+  });
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData);
   data.datum = new Date();
   let uploadData = { data: data };
   console.log(uploadData);
@@ -144,8 +216,8 @@ form.addEventListener('submit', (event) => {
     } else {
       // ERROR
     }
-  }); */
-});
+  });
+}
 
 function getResult() {
   const gruppe = localStorage.getItem('gruppe');
@@ -163,40 +235,19 @@ function getResult() {
         .json()
         .then((data) => {
           console.log(data.data[2].anzahlRichtigerAntworten);
+          closeModal();
+          showModal({
+            art: 'ergebnis',
+            messageText: `Du hast ${data.data[5].anzahlRichtigerAntworten} Fragen richtig beantwortet`,
+            button1Show: false,
+            button1Text: '',
+            button2Show: true,
+            button2Text: 'Modal schließen',
+          });
         })
         .catch((err) => console.log(err));
     } else {
       // ERROR
     }
   });
-}
-
-function showModal() {
-  console.log('show Modal');
-  const modal = document.getElementById('modal').content.cloneNode(true);
-  const message = modal.getElementById('message');
-  const overlay = modal.querySelector('.confirm-alert-overlay');
-  overlay.classList.add('hochladen');
-  message.innerHTML =
-    'Möchtest du deine Antworten wirklich abschicken? Du hast nur einmal die Möglichkeit am Quiz teilzunehmen.';
-  const button1 = modal.getElementById('button1');
-  button1.innerHTML = 'Ja';
-  const button2 = modal.getElementById('button2');
-  button2.innerHTML = 'Nein';
-  document.body.classList.add('confirm-alert-body-element');
-  document.body.appendChild(modal);
-  overlay.addEventListener('click', (event) => {
-    if (overlay === event.target) {
-      closeModal();
-    }
-  });
-  button2.addEventListener('click', () => {
-    closeModal();
-  });
-}
-
-function closeModal() {
-  document.body.classList.remove('confirm-alert-body-element');
-  const modal = document.querySelector('.confirm-alert-overlay');
-  modal.remove();
 }
