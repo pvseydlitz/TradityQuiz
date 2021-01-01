@@ -1,6 +1,14 @@
 .bg-black {
   background-color: black;
 }
+.text-orange {
+  color: #f1592a;
+}
+.btn-orange {
+  color: #fff;
+  background-color: #f1592a;
+  border-color: #f1592a;
+}
 
 body.confirm-alert-body-element {
   overflow: hidden;

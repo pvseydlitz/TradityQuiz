@@ -2,23 +2,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link href="./Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="custom.css" />
-    <title>Document</title>
+    <title>Tradity Quiz</title>
   </head>
   <body class="bg-black text-white">
     <div class="container">
       <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6 m-md-0 mr-3 ml-3">
-          <h1 class="mt-4">Tradity Quiz 2021</h1>
+          <h1 class="mt-4 text-orange text-center">Tradity Quiz 2021</h1>
           <p>
-            Durch die Teilnahme an dem Quiz hast du die Möglichkeit, extra
-            Kapital für das Börsenspiel zu erhalten.
+            Dieses Quiz testet dein Wissen aus den Education Inhalten von
+            Tradity. Wenn du (...) Fragen richtig beantwortest, kriegst du mehr
+            Startkapital für das Börsenspiel.
           </p>
-          <form name="quiz" id="quizForm">
+          <form name="quiz" id="quizForm" class="mb-4">
             <div class="mb-4">
-              <label for="exampleInputEmail1" class="form-label"
+              <label for="exampleInputEmail1" class="form-label text-orange"
                 ><b>E-Mail Adresse</b></label
               >
               <input
@@ -30,14 +32,14 @@
                 required
               />
               <div id="emailHelp" class="form-text">
-                Damit dir das extra Kapital gutgeschrieben werden kann, musst du
-                hier die gleiche E-Mail Adresse angeben wie bei der App für das
+                Damit dir das Kapital gutgeschrieben werden kann, musst du hier
+                die gleiche E-Mail Adresse angeben wie bei der App für das
                 Börsenspiel.
               </div>
             </div>
 
             <div class="mb-4">
-              <label for="exampleInputPassword1" class="form-label"
+              <label for="exampleInputPassword1" class="form-label text-orange"
                 ><b>Benutzername</b></label
               >
               <input
@@ -53,18 +55,13 @@
                 übereinstimmen.
               </div>
             </div>
-            <div id="platzhalterFragen"></div>
-            <div class="mb-3 form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="exampleCheck1"
-              />
-              <label class="form-check-label" for="exampleCheck1"
-                >Check me out</label
-              >
+            <div id="platzhalterFragen">
+              <h2 class="text-orange mb-4" id="platzhalterText">
+                <em>Die Fragen werden geladen...</em>
+              </h2>
+              <h4 class="text-orange text-center mb-2" id="gruppe"></h4>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-orange">Submit</button>
           </form>
         </div>
         <div class="col-md-3"></div>
@@ -74,7 +71,7 @@
     <!--Template Frage mit 4 Radiobuttons-->
     <template id="4RadioButtons">
       <div class="mb-4">
-        <p class="mb-1">
+        <p class="mb-1 text-orange">
           <b id="frage">Multiple Choice Quiz mit 3 Antwortmöglichkeiten</b>
         </p>
         <div class="form-check">
@@ -107,7 +104,7 @@
     <!--Template mit 3 Radiobuttons-->
     <template id="3RadioButtons">
       <div class="mb-4">
-        <p class="mb-1">
+        <p class="mb-1 text-orange">
           <b id="frage">Multiple Choice Quiz mit 3 Antwortmöglichkeiten</b>
         </p>
         <div class="form-check">
@@ -149,7 +146,7 @@
     <!--Template mit 2 Radio Buttons-->
     <template id="2RadioButtons">
       <div class="mb-4">
-        <p class="mb-1">
+        <p class="mb-1 text-orange">
           <b id="frage"
             >Multiple Choice Quiz mit 2 Antwortmöglichkeiten z.B. Wahr oder
             Falsche Statements</b
