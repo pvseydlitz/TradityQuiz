@@ -37,6 +37,10 @@ function getQuestions() {
 //Aus den geladenen Daten werden die Multiple-Choice Fragen gerendert
 function setHTML(fragenDaten) {
   const form = document.getElementById('platzhalterFragen');
+  const platzhalterText = document.getElementById('platzhalterText');
+  platzhalterText.remove();
+  const gruppeText = document.getElementById('gruppe');
+  gruppeText.innerHTML = 'Gruppe: ' + localStorage.getItem('gruppe');
 
   fragenDaten.forEach((frage, index) => {
     let i = index;
@@ -194,7 +198,6 @@ function checkIfUserAlreadyDidQuiz() {
   });
   data.datum = datum.slice(0, 10);
   data.uhrzeit = datum.slice(12, 20);
-
   let uploadData = { data: data };
   const gruppe = localStorage.getItem('gruppe');
   let id = '';
