@@ -184,9 +184,17 @@ function closeModal() {
 function checkIfUserAlreadyDidQuiz() {
   const formData = new FormData(form);
   const data = Object.fromEntries(formData);
-  const datum = new Date().toLocaleString('de-De');
+  let datum = new Date().toLocaleString('de-De', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  });
   data.datum = datum.slice(0, 10);
   data.uhrzeit = datum.slice(12, 20);
+
   let uploadData = { data: data };
   const gruppe = localStorage.getItem('gruppe');
   let id = '';
@@ -211,8 +219,8 @@ function checkIfUserAlreadyDidQuiz() {
             (zeilen) => zeilen.email === email
           );
           if (
-            resultFilteredByBenutzer.length > 1 &&
-            resultFilteredByEmail.length > 1
+            resultFilteredByBenutzer.length > 0 &&
+            resultFilteredByEmail.length > 0
           ) {
             closeModal();
             showModal({
@@ -224,7 +232,7 @@ function checkIfUserAlreadyDidQuiz() {
               button2Show: true,
               button2Text: 'Hinweis schließen',
             });
-          } else if (resultFilteredByBenutzer.length > 1) {
+          } else if (resultFilteredByBenutzer.length > 0) {
             closeModal();
             showModal({
               art: 'fehler',
@@ -235,7 +243,7 @@ function checkIfUserAlreadyDidQuiz() {
               button2Show: true,
               button2Text: 'Hinweis schließen',
             });
-          } else if (resultFilteredByEmail.length > 1) {
+          } else if (resultFilteredByEmail.length > 0) {
             closeModal();
             showModal({
               art: 'fehler',
