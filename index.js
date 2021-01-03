@@ -1,3 +1,4 @@
+//Jedem neuen Benutzer wird zufällig entweder Gruppe 1 oder Gruppe 2 zugeordnet
 function setGroup() {
   const number = Math.floor(Math.random() * 2 + 1);
   const gruppe = localStorage.getItem('gruppe');
@@ -179,12 +180,14 @@ function showModal({
   });
 }
 
+//Funktion zum Schließen des Modales
 function closeModal() {
   document.body.classList.remove('confirm-alert-body-element');
   const modal = document.querySelector('.confirm-alert-overlay');
   modal.remove();
 }
 
+//Diese Funktion überprüft anhand der Tabelle Alle Benutzer, ob der Benutzer schon einmal an dem Quiz teilgenommen hat
 function checkIfUserAlreadyDidQuiz() {
   const formData = new FormData(form);
   const data = Object.fromEntries(formData);
@@ -200,18 +203,11 @@ function checkIfUserAlreadyDidQuiz() {
   data.uhrzeit = datum.slice(12, 20);
   let uploadData = { data: data };
   const gruppe = localStorage.getItem('gruppe');
-  let id = '';
-  if (gruppe === '1') {
-    id = '5786';
-  }
-  if (gruppe === '2') {
-    id = '5785';
-  }
+
   const benutzer = uploadData.data.benutzername;
   const email = uploadData.data.email;
-  fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
+  fetch('https://api.apispreadsheets.com/data/5861/').then((res) => {
     if (res.status === 200) {
-      // SUCCESS
       res
         .json()
         .then((data) => {
@@ -268,6 +264,7 @@ function checkIfUserAlreadyDidQuiz() {
   });
 }
 
+//Wenn der Benutzer noch nicht teilgenommen hat, werden seine Antworten hochgeladen
 function uploadAnswers(uploadData) {
   closeModal();
   showModal({
@@ -291,6 +288,25 @@ function uploadAnswers(uploadData) {
     body: JSON.stringify(uploadData),
   }).then((res) => {
     if (res.status === 201) {
+      insertUser(uploadData);
+    } else {
+      // ERROR
+    }
+  });
+}
+
+//Der Benutzer wird in die mit Email, Benutzername und Gruppe in die Tabelle Alle Benutzer eingetragen
+function insertUser(uploadData) {
+  let data = {};
+  data.gruppe = localStorage.getItem('gruppe');
+  data.benutzername = uploadData.data.benutzername;
+  data.email = uploadData.data.email;
+  let dataToUpload = { data: data };
+  fetch('https://api.apispreadsheets.com/data/5861/', {
+    method: 'POST',
+    body: JSON.stringify(dataToUpload),
+  }).then((res) => {
+    if (res.status === 201) {
       getResult(uploadData);
     } else {
       // ERROR
@@ -298,6 +314,7 @@ function uploadAnswers(uploadData) {
   });
 }
 
+//Aus der Tabelle AUswertung Gruppe 1 oder 2 wird das Ergebnis an richtig beantworteten Fragen ausgelesen
 function getResult(uploadData) {
   const gruppe = localStorage.getItem('gruppe');
   let id = '';
