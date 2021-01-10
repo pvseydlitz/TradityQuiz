@@ -1,29 +1,20 @@
-//Jedem neuen Benutzer wird zufällig entweder Gruppe 1 oder Gruppe 2 zugeordnet
-function setGroup() {
-  const number = Math.floor(Math.random() * 2 + 1);
-  const gruppe = localStorage.getItem('gruppe');
-  if (gruppe === null) {
-    localStorage.setItem('gruppe', number);
-  }
-  getQuestions();
-}
-
 //Fragen werden von Google Sheets geladen
-function getQuestions() {
-  fetch('https://api.apispreadsheets.com/data/5767/').then((res) => {
+let day = '';
+function getQuestions(weekday) {
+  day = weekday;
+  fetch('https://api.apispreadsheets.com/data/6243/').then((res) => {
     if (res.status === 200) {
       res
         .json()
         .then((fragenDaten) => {
-          const gruppe = localStorage.getItem('gruppe');
-          if (gruppe === '1') {
+          if (day === 'Montag') {
             fragenDaten = fragenDaten.data.filter(
-              (frage) => frage.Gruppe === '1'
+              (frage) => frage.Tag === 'Montag'
             );
           }
-          if (gruppe === '2') {
+          if (day === 'Dienstag') {
             fragenDaten = fragenDaten.data.filter(
-              (frage) => frage.Gruppe === '2'
+              (frage) => frage.Tag === 'Dienstag'
             );
           }
           setHTML(fragenDaten);
@@ -37,6 +28,7 @@ function getQuestions() {
 
 //Aus den geladenen Daten werden die Multiple-Choice Fragen gerendert
 function setHTML(fragenDaten) {
+  console.log(day);
   const form = document.getElementById('platzhalterFragen');
   const platzhalterText = document.getElementById('platzhalterText');
   platzhalterText.remove();
@@ -202,11 +194,14 @@ function checkIfUserAlreadyDidQuiz() {
   data.datum = datum.slice(0, 10);
   data.uhrzeit = datum.slice(12, 20);
   let uploadData = { data: data };
-  const gruppe = localStorage.getItem('gruppe');
 
   const benutzer = uploadData.data.benutzername;
   const email = uploadData.data.email;
-  fetch('https://api.apispreadsheets.com/data/5861/').then((res) => {
+  let id = '';
+  if (day === 'Montag') {
+    id = '6245';
+  }
+  fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
     if (res.status === 200) {
       res
         .json()
@@ -275,36 +270,13 @@ function uploadAnswers(uploadData) {
     button2Show: false,
     button2Text: '',
   });
-  const gruppe = localStorage.getItem('gruppe');
   let id = '';
-  if (gruppe === '1') {
-    id = '5786';
-  }
-  if (gruppe === '2') {
-    id = '5785';
+  if (day === 'Montag') {
+    id = '6245';
   }
   fetch(`https://api.apispreadsheets.com/data/${id}/`, {
     method: 'POST',
     body: JSON.stringify(uploadData),
-  }).then((res) => {
-    if (res.status === 201) {
-      insertUser(uploadData);
-    } else {
-      // ERROR
-    }
-  });
-}
-
-//Der Benutzer wird in die mit Email, Benutzername und Gruppe in die Tabelle Alle Benutzer eingetragen
-function insertUser(uploadData) {
-  let data = {};
-  data.gruppe = localStorage.getItem('gruppe');
-  data.benutzername = uploadData.data.benutzername;
-  data.email = uploadData.data.email;
-  let dataToUpload = { data: data };
-  fetch('https://api.apispreadsheets.com/data/5861/', {
-    method: 'POST',
-    body: JSON.stringify(dataToUpload),
   }).then((res) => {
     if (res.status === 201) {
       getResult(uploadData);
@@ -314,15 +286,14 @@ function insertUser(uploadData) {
   });
 }
 
-//Aus der Tabelle AUswertung Gruppe 1 oder 2 wird das Ergebnis an richtig beantworteten Fragen ausgelesen
+//Aus der Tabelle Auswertung Gruppe 1 oder 2 wird das Ergebnis an richtig beantworteten Fragen ausgelesen
 function getResult(uploadData) {
-  const gruppe = localStorage.getItem('gruppe');
   let id = '';
-  if (gruppe === '1') {
-    id = '5781';
+  if (day === 'Montag') {
+    id = '6249';
   }
-  if (gruppe === '2') {
-    id = '5783';
+  if (day === 'Dienstag') {
+    id = '';
   }
   const benutzer = uploadData.data.benutzername;
   fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
@@ -356,3 +327,22 @@ function getResult(uploadData) {
     }
   });
 }
+
+//Der Benutzer wird in die mit Email, Benutzername und Gruppe in die Tabelle Alle Benutzer eingetragen
+/* function insertUser(uploadData) {
+  let data = {};
+  data.gruppe = localStorage.getItem('gruppe');
+  data.benutzername = uploadData.data.benutzername;
+  data.email = uploadData.data.email;
+  let dataToUpload = { data: data };
+  fetch('https://api.apispreadsheets.com/data/5861/', {
+    method: 'POST',
+    body: JSON.stringify(dataToUpload),
+  }).then((res) => {
+    if (res.status === 201) {
+      getResult(uploadData);
+    } else {
+      // ERROR
+    }
+  });
+} */
