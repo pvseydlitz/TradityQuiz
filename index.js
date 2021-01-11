@@ -222,9 +222,7 @@ function checkIfUserAlreadyDidQuiz() {
               link: 'tuesday.html',
             },
           ];
-          console.log(dayLinks);
           dayLinks = dayLinks.filter((object) => object.day !== day);
-          console.log(dayLinks);
           if (
             resultFilteredByBenutzer.length > 0 &&
             resultFilteredByEmail.length > 0
@@ -292,7 +290,51 @@ function uploadAnswers(uploadData) {
     body: JSON.stringify(uploadData),
   }).then((res) => {
     if (res.status === 201) {
-      getResult(uploadData);
+      //getResult(uploadData);
+      insertUser(uploadData);
+    } else {
+      // ERROR
+    }
+  });
+}
+
+//Der Benutzer wird mit Email und Benutzername in die Tabelle Alle Benutzer eingetragen, solange für ihn noch kein Eintrag existiert
+function insertUser(uploadData) {
+  let data = {};
+  data.benutzername = uploadData.data.benutzername;
+  data.email = uploadData.data.email;
+  let dataToUpload = { data: data };
+  fetch('https://api.apispreadsheets.com/data/6286/').then((res) => {
+    if (res.status === 200) {
+      // SUCCESS
+      res
+        .json()
+        .then((data) => {
+          let resultFilteredByBenutzer = data.data.filter(
+            (zeilen) => zeilen.benutzername === dataToUpload.data.benutzername
+          );
+          let resultFilteredByEmail = data.data.filter(
+            (zeilen) => zeilen.email === dataToUpload.data.email
+          );
+          if (
+            resultFilteredByBenutzer.length === 0 ||
+            resultFilteredByEmail.length === 0
+          ) {
+            fetch('https://api.apispreadsheets.com/data/6286/', {
+              method: 'POST',
+              body: JSON.stringify(dataToUpload),
+            }).then((res) => {
+              if (res.status === 201) {
+                getResult(uploadData);
+              } else {
+                // ERROR
+              }
+            });
+          } else {
+            getResult(uploadData);
+          }
+        })
+        .catch((err) => console.log(err));
     } else {
       // ERROR
     }
@@ -301,28 +343,66 @@ function uploadAnswers(uploadData) {
 
 //Aus der Tabelle Auswertung Gruppe 1 oder 2 wird das Ergebnis an richtig beantworteten Fragen ausgelesen
 function getResult(uploadData) {
-  let id = '';
-  if (day === 'Montag') {
-    id = '6249';
-  }
-  if (day === 'Dienstag') {
-    id = '';
-  }
   const benutzer = uploadData.data.benutzername;
-  fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
+  fetch('https://api.apispreadsheets.com/data/6249/').then((res) => {
     if (res.status === 200) {
       res
         .json()
         .then((data) => {
-          let resultFilteredByBenutzer = data.data.filter(
+          let resultFiltered = data.data.filter(
             (zeilen) => zeilen.benutzername === benutzer
           );
 
           let messageText = '';
-          if (resultFilteredByBenutzer[0].anzahlRichtigerAntworten === '1') {
-            messageText = 'Du hast 1 Frage richtig beantwortet';
+          let resultMonday = resultFiltered[0].ergebnisMontag;
+          let resultTuesday = resultFiltered[0].ergebnisDienstag;
+          let resultWednesday = resultFiltered[0].ergebnisMittwoch;
+          let resultThursday = resultFiltered[0].ergebnisDonnerstag;
+          let resultFriday = resultFiltered[0].ergebnisFreitag;
+
+          if (resultMonday === 'noch nicht teilgenommen') {
+            resultMonday = `<a href="./index.html">${resultMonday}</a>`;
           } else {
-            messageText = `Du hast ${resultFilteredByBenutzer[0].anzahlRichtigerAntworten} Fragen richtig beantwortet`;
+            resultMonday = String(resultMonday) + ' Punkte';
+          }
+          if (resultTuesday === 'noch nicht teilgenommen') {
+            resultTuesday = `<a href="./tuesday.html">${resultTuesday}</a>`;
+          } else {
+            resultTuesday = String(resultTuesday) + ' Punkte';
+          }
+          if (resultWednesday === 'noch nicht teilgenommen') {
+            resultWednesday = `<a href="./index.html">${resultWednesday}</a>`;
+          } else {
+            resultWednesday = String(resultWednesday) + ' Punkte';
+          }
+          if (resultThursday === 'noch nicht teilgenommen') {
+            resultThursday = `<a href="./index.html">${resultThursday}</a>`;
+          } else {
+            resultThursday = String(resultThursday) + ' Punkte';
+          }
+          if (resultFriday === 'noch nicht teilgenommen') {
+            resultFriday = `<a href="./index.html">${resultFriday}</a>`;
+          } else {
+            resultFriday = String(resultFriday) + ' Punkte';
+          }
+
+          let currentDay = '';
+          if (day === 'Montag') {
+            currentDay = resultMonday;
+          } else if (day === 'Dienstag') {
+            currentDay = resultTuesday;
+          } else if (day === 'Mittwoch') {
+            currentDay = resultWednesday;
+          } else if (day === 'Donnerstag') {
+            currentDay = resultThursday;
+          } else if (day === 'Freitag') {
+            currentDay = resultFriday;
+          }
+
+          if (currentDay === '1') {
+            messageText = 'Du hast <b>1</b> Frage richtig beantwortet';
+          } else {
+            messageText = `Du hast <b>${currentDay}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
           }
           closeModal();
           showModal({
@@ -340,22 +420,3 @@ function getResult(uploadData) {
     }
   });
 }
-
-//Der Benutzer wird in die mit Email, Benutzername und Gruppe in die Tabelle Alle Benutzer eingetragen
-/* function insertUser(uploadData) {
-  let data = {};
-  data.gruppe = localStorage.getItem('gruppe');
-  data.benutzername = uploadData.data.benutzername;
-  data.email = uploadData.data.email;
-  let dataToUpload = { data: data };
-  fetch('https://api.apispreadsheets.com/data/5861/', {
-    method: 'POST',
-    body: JSON.stringify(dataToUpload),
-  }).then((res) => {
-    if (res.status === 201) {
-      getResult(uploadData);
-    } else {
-      // ERROR
-    }
-  });
-} */
