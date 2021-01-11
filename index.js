@@ -2,6 +2,8 @@
 let day = '';
 function getQuestions(weekday) {
   day = weekday;
+  const headline = document.getElementById('headline');
+  headline.innerHTML = 'Education Week Quiz ' + day;
   fetch('https://api.apispreadsheets.com/data/6243/').then((res) => {
     if (res.status === 200) {
       res
@@ -32,8 +34,6 @@ function setHTML(fragenDaten) {
   const form = document.getElementById('platzhalterFragen');
   const platzhalterText = document.getElementById('platzhalterText');
   platzhalterText.remove();
-  const gruppeText = document.getElementById('gruppe');
-  gruppeText.innerHTML = 'Gruppe: ' + localStorage.getItem('gruppe');
 
   fragenDaten.forEach((frage, index) => {
     let i = index;
@@ -212,6 +212,19 @@ function checkIfUserAlreadyDidQuiz() {
           let resultFilteredByEmail = data.data.filter(
             (zeilen) => zeilen.email === email
           );
+          let dayLinks = [
+            {
+              day: 'Montag',
+              link: 'index.html',
+            },
+            {
+              day: 'Dienstag',
+              link: 'tuesday.html',
+            },
+          ];
+          console.log(dayLinks);
+          dayLinks = dayLinks.filter((object) => object.day !== day);
+          console.log(dayLinks);
           if (
             resultFilteredByBenutzer.length > 0 &&
             resultFilteredByEmail.length > 0
@@ -219,8 +232,8 @@ function checkIfUserAlreadyDidQuiz() {
             closeModal();
             showModal({
               art: 'fehler',
-              messageText:
-                'Mit disem Benutzernamen und der E-Mail Adresse wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              messageText: `Mit disem Benutzernamen und der E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
@@ -230,8 +243,8 @@ function checkIfUserAlreadyDidQuiz() {
             closeModal();
             showModal({
               art: 'fehler',
-              messageText:
-                'Mit disem Benutzernamen wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              messageText: `Mit disem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
@@ -241,8 +254,8 @@ function checkIfUserAlreadyDidQuiz() {
             closeModal();
             showModal({
               art: 'fehler',
-              messageText:
-                'Mit diser E-Mail Adresse wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              messageText: `Mit diser E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
