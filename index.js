@@ -19,6 +19,22 @@ function getQuestions(weekday) {
               (frage) => frage.Tag === 'Dienstag'
             );
           }
+          if (day === 'Mittwoch') {
+            fragenDaten = fragenDaten.data.filter(
+              (frage) => frage.Tag === 'Mittwoch'
+            );
+          }
+          if (day === 'Donnerstag') {
+            fragenDaten = fragenDaten.data.filter(
+              (frage) => frage.Tag === 'Donnerstag'
+            );
+          }
+          if (day === 'Freitag') {
+            fragenDaten = fragenDaten.data.filter(
+              (frage) => frage.Tag === 'Freitag'
+            );
+          }
+
           setHTML(fragenDaten);
         })
         .catch((err) => console.log(err));
@@ -30,13 +46,13 @@ function getQuestions(weekday) {
 
 //Aus den geladenen Daten werden die Multiple-Choice Fragen gerendert
 function setHTML(fragenDaten) {
-  console.log(day);
   const form = document.getElementById('platzhalterFragen');
   const platzhalterText = document.getElementById('platzhalterText');
   platzhalterText.remove();
 
   fragenDaten.forEach((frage, index) => {
     let i = index;
+
     if (frage.Fragennummer !== '' && frage.Art !== 'Frage ausblenden') {
       if (fragenDaten[i].Art === 'Multiple-Choice 4 Antworten') {
         let template = document
@@ -65,6 +81,7 @@ function setHTML(fragenDaten) {
 
         form.appendChild(template);
       }
+
       if (fragenDaten[index].Art === 'Multiple-Choice 3 Antworten') {
         let template = document
           .getElementById('3RadioButtons')
@@ -87,8 +104,10 @@ function setHTML(fragenDaten) {
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           );
         });
+
         form.appendChild(template);
       }
+
       if (fragenDaten[index].Art === 'Multiple-Choice 2 Antworten') {
         let template = document
           .getElementById('2RadioButtons')
@@ -109,6 +128,7 @@ function setHTML(fragenDaten) {
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           );
         });
+
         form.appendChild(template);
       }
     }
@@ -142,6 +162,7 @@ function showModal({
   const modal = document.getElementById('modal').content.cloneNode(true);
   const message = modal.getElementById('message');
   message.innerHTML = messageText;
+
   const button1 = modal.getElementById('button1');
   if (button1Show === true) {
     button1.innerHTML = button1Text;
@@ -154,14 +175,17 @@ function showModal({
   } else {
     button2.remove();
   }
+
   document.body.classList.add('confirm-alert-body-element');
   document.body.appendChild(modal);
   const overlay = document.querySelector('.confirm-alert-overlay');
+
   overlay.addEventListener('click', (event) => {
     if (overlay === event.target) {
       closeModal();
     }
   });
+
   button2.addEventListener('click', () => {
     closeModal();
   });
@@ -194,13 +218,14 @@ function checkIfUserAlreadyDidQuiz() {
   data.datum = datum.slice(0, 10);
   data.uhrzeit = datum.slice(12, 20);
   let uploadData = { data: data };
-
   const benutzer = uploadData.data.benutzername;
   const email = uploadData.data.email;
+
   let id = '';
   if (day === 'Montag') {
     id = '6245';
   }
+
   fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
     if (res.status === 200) {
       res
@@ -212,6 +237,7 @@ function checkIfUserAlreadyDidQuiz() {
           let resultFilteredByEmail = data.data.filter(
             (zeilen) => zeilen.email === email
           );
+
           let dayLinks = [
             {
               day: 'Montag',
@@ -221,8 +247,21 @@ function checkIfUserAlreadyDidQuiz() {
               day: 'Dienstag',
               link: 'tuesday.html',
             },
+            {
+              day: 'Mittwoch',
+              link: 'wednesday.html',
+            },
+            {
+              day: 'Donnerstag',
+              link: 'thursday.html',
+            },
+            {
+              day: 'Freitag',
+              link: 'friday.html',
+            },
           ];
           dayLinks = dayLinks.filter((object) => object.day !== day);
+
           if (
             resultFilteredByBenutzer.length > 0 &&
             resultFilteredByEmail.length > 0
@@ -231,7 +270,8 @@ function checkIfUserAlreadyDidQuiz() {
             showModal({
               art: 'fehler',
               messageText: `Mit disem Benutzernamen und der E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
-              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>`,
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
+              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
@@ -242,7 +282,8 @@ function checkIfUserAlreadyDidQuiz() {
             showModal({
               art: 'fehler',
               messageText: `Mit disem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
-              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>`,
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
+              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
@@ -253,7 +294,8 @@ function checkIfUserAlreadyDidQuiz() {
             showModal({
               art: 'fehler',
               messageText: `Mit diser E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
-              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>`,
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
+              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
@@ -281,16 +323,17 @@ function uploadAnswers(uploadData) {
     button2Show: false,
     button2Text: '',
   });
+
   let id = '';
   if (day === 'Montag') {
     id = '6245';
   }
+
   fetch(`https://api.apispreadsheets.com/data/${id}/`, {
     method: 'POST',
     body: JSON.stringify(uploadData),
   }).then((res) => {
     if (res.status === 201) {
-      //getResult(uploadData);
       insertUser(uploadData);
     } else {
       // ERROR
@@ -304,9 +347,9 @@ function insertUser(uploadData) {
   data.benutzername = uploadData.data.benutzername;
   data.email = uploadData.data.email;
   let dataToUpload = { data: data };
+
   fetch('https://api.apispreadsheets.com/data/6286/').then((res) => {
     if (res.status === 200) {
-      // SUCCESS
       res
         .json()
         .then((data) => {
@@ -316,6 +359,7 @@ function insertUser(uploadData) {
           let resultFilteredByEmail = data.data.filter(
             (zeilen) => zeilen.email === dataToUpload.data.email
           );
+
           if (
             resultFilteredByBenutzer.length === 0 ||
             resultFilteredByEmail.length === 0
@@ -334,6 +378,7 @@ function insertUser(uploadData) {
             getResult(uploadData);
           }
         })
+
         .catch((err) => console.log(err));
     } else {
       // ERROR
@@ -341,7 +386,7 @@ function insertUser(uploadData) {
   });
 }
 
-//Aus der Tabelle Auswertung Gruppe 1 oder 2 wird das Ergebnis an richtig beantworteten Fragen ausgelesen
+//Aus der Tabelle Auswertung Alle Benutzer wird das Ergebnis geladen
 function getResult(uploadData) {
   const benutzer = uploadData.data.benutzername;
   fetch('https://api.apispreadsheets.com/data/6249/').then((res) => {
@@ -353,7 +398,6 @@ function getResult(uploadData) {
             (zeilen) => zeilen.benutzername === benutzer
           );
 
-          let messageText = '';
           let resultMonday = resultFiltered[0].ergebnisMontag;
           let resultTuesday = resultFiltered[0].ergebnisDienstag;
           let resultWednesday = resultFiltered[0].ergebnisMittwoch;
@@ -399,11 +443,13 @@ function getResult(uploadData) {
             currentDay = resultFriday;
           }
 
+          let messageText = '';
           if (currentDay === '1') {
             messageText = 'Du hast <b>1</b> Frage richtig beantwortet';
           } else {
             messageText = `Du hast <b>${currentDay}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
           }
+
           closeModal();
           showModal({
             art: 'ergebnis',
