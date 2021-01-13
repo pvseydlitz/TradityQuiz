@@ -224,6 +224,14 @@ function checkIfUserAlreadyDidQuiz() {
   let id = '';
   if (day === 'Montag') {
     id = '6245';
+  } else if (day === 'Dienstag') {
+    id = '6368';
+  } else if (day === 'Mittwoch') {
+    id = '6369';
+  } else if (day === 'Donnerstag') {
+    id = '6371';
+  } else if (day === 'Freitag') {
+    id = '6372';
   }
 
   fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
@@ -327,6 +335,14 @@ function uploadAnswers(uploadData) {
   let id = '';
   if (day === 'Montag') {
     id = '6245';
+  } else if (day === 'Dienstag') {
+    id = '6368';
+  } else if (day === 'Mittwoch') {
+    id = '6369';
+  } else if (day === 'Donnerstag') {
+    id = '6371';
+  } else if (day === 'Freitag') {
+    id = '6372';
   }
 
   fetch(`https://api.apispreadsheets.com/data/${id}/`, {
@@ -406,26 +422,36 @@ function getResult(uploadData) {
 
           if (resultMonday === 'noch nicht teilgenommen') {
             resultMonday = `<a href="./index.html">${resultMonday}</a>`;
+          } else if (resultMonday === '1') {
+            resultMonday = String(resultMonday) + ' Punkt';
           } else {
             resultMonday = String(resultMonday) + ' Punkte';
           }
           if (resultTuesday === 'noch nicht teilgenommen') {
             resultTuesday = `<a href="./tuesday.html">${resultTuesday}</a>`;
+          } else if (resultTuesday === '1') {
+            resultTuesday = String(resultTuesday) + ' Punkt';
           } else {
             resultTuesday = String(resultTuesday) + ' Punkte';
           }
           if (resultWednesday === 'noch nicht teilgenommen') {
-            resultWednesday = `<a href="./index.html">${resultWednesday}</a>`;
+            resultWednesday = `<a href="./wednesday.html">${resultWednesday}</a>`;
+          } else if (resultWednesday === '1') {
+            resultWednesday = String(resultWednesday) + ' Punkt';
           } else {
             resultWednesday = String(resultWednesday) + ' Punkte';
           }
           if (resultThursday === 'noch nicht teilgenommen') {
-            resultThursday = `<a href="./index.html">${resultThursday}</a>`;
+            resultThursday = `<a href="./thursday.html">${resultThursday}</a>`;
+          } else if (resultThursday === '1') {
+            resultThursday = String(resultThursday) + ' Punkt';
           } else {
             resultThursday = String(resultThursday) + ' Punkte';
           }
           if (resultFriday === 'noch nicht teilgenommen') {
-            resultFriday = `<a href="./index.html">${resultFriday}</a>`;
+            resultFriday = `<a href="./friday.html">${resultFriday}</a>`;
+          } else if (resultFriday === '1') {
+            resultFriday = String(resultFriday) + ' Punkt';
           } else {
             resultFriday = String(resultFriday) + ' Punkte';
           }
@@ -444,10 +470,11 @@ function getResult(uploadData) {
           }
 
           let messageText = '';
-          if (currentDay === '1') {
-            messageText = 'Du hast <b>1</b> Frage richtig beantwortet';
+          if (currentDay === '1 Punkt') {
+            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
           } else {
-            messageText = `Du hast <b>${currentDay}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
+            const points = currentDay.split(' ');
+            messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
           }
 
           closeModal();
