@@ -1,31 +1,40 @@
-//Jedem neuen Benutzer wird zufällig entweder Gruppe 1 oder Gruppe 2 zugeordnet
-function setGroup() {
-  const number = Math.floor(Math.random() * 2 + 1);
-  const gruppe = localStorage.getItem('gruppe');
-  if (gruppe === null) {
-    localStorage.setItem('gruppe', number);
-  }
-  getQuestions();
-}
-
 //Fragen werden von Google Sheets geladen
-function getQuestions() {
-  fetch('https://api.apispreadsheets.com/data/5767/').then((res) => {
+let day = '';
+function getQuestions(weekday) {
+  day = weekday;
+  const headline = document.getElementById('headline');
+  headline.innerHTML = 'Education Week Quiz ' + day;
+  fetch('https://api.apispreadsheets.com/data/6243/').then((res) => {
     if (res.status === 200) {
       res
         .json()
         .then((fragenDaten) => {
-          const gruppe = localStorage.getItem('gruppe');
-          if (gruppe === '1') {
+          if (day === 'Montag') {
             fragenDaten = fragenDaten.data.filter(
-              (frage) => frage.Gruppe === '1'
+              (frage) => frage.Tag === 'Montag'
             );
           }
-          if (gruppe === '2') {
+          if (day === 'Dienstag') {
             fragenDaten = fragenDaten.data.filter(
-              (frage) => frage.Gruppe === '2'
+              (frage) => frage.Tag === 'Dienstag'
             );
           }
+          if (day === 'Mittwoch') {
+            fragenDaten = fragenDaten.data.filter(
+              (frage) => frage.Tag === 'Mittwoch'
+            );
+          }
+          if (day === 'Donnerstag') {
+            fragenDaten = fragenDaten.data.filter(
+              (frage) => frage.Tag === 'Donnerstag'
+            );
+          }
+          if (day === 'Freitag') {
+            fragenDaten = fragenDaten.data.filter(
+              (frage) => frage.Tag === 'Freitag'
+            );
+          }
+
           setHTML(fragenDaten);
         })
         .catch((err) => console.log(err));
@@ -40,11 +49,10 @@ function setHTML(fragenDaten) {
   const form = document.getElementById('platzhalterFragen');
   const platzhalterText = document.getElementById('platzhalterText');
   platzhalterText.remove();
-  const gruppeText = document.getElementById('gruppe');
-  gruppeText.innerHTML = 'Gruppe: ' + localStorage.getItem('gruppe');
 
   fragenDaten.forEach((frage, index) => {
     let i = index;
+
     if (frage.Fragennummer !== '' && frage.Art !== 'Frage ausblenden') {
       if (fragenDaten[i].Art === 'Multiple-Choice 4 Antworten') {
         let template = document
@@ -73,6 +81,7 @@ function setHTML(fragenDaten) {
 
         form.appendChild(template);
       }
+
       if (fragenDaten[index].Art === 'Multiple-Choice 3 Antworten') {
         let template = document
           .getElementById('3RadioButtons')
@@ -95,8 +104,10 @@ function setHTML(fragenDaten) {
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           );
         });
+
         form.appendChild(template);
       }
+
       if (fragenDaten[index].Art === 'Multiple-Choice 2 Antworten') {
         let template = document
           .getElementById('2RadioButtons')
@@ -117,6 +128,7 @@ function setHTML(fragenDaten) {
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           );
         });
+
         form.appendChild(template);
       }
     }
@@ -150,6 +162,7 @@ function showModal({
   const modal = document.getElementById('modal').content.cloneNode(true);
   const message = modal.getElementById('message');
   message.innerHTML = messageText;
+
   const button1 = modal.getElementById('button1');
   if (button1Show === true) {
     button1.innerHTML = button1Text;
@@ -162,14 +175,17 @@ function showModal({
   } else {
     button2.remove();
   }
+
   document.body.classList.add('confirm-alert-body-element');
   document.body.appendChild(modal);
   const overlay = document.querySelector('.confirm-alert-overlay');
+
   overlay.addEventListener('click', (event) => {
     if (overlay === event.target) {
       closeModal();
     }
   });
+
   button2.addEventListener('click', () => {
     closeModal();
   });
@@ -202,11 +218,23 @@ function checkIfUserAlreadyDidQuiz() {
   data.datum = datum.slice(0, 10);
   data.uhrzeit = datum.slice(12, 20);
   let uploadData = { data: data };
-  const gruppe = localStorage.getItem('gruppe');
-
   const benutzer = uploadData.data.benutzername;
   const email = uploadData.data.email;
-  fetch('https://api.apispreadsheets.com/data/5861/').then((res) => {
+
+  let id = '';
+  if (day === 'Montag') {
+    id = '6245';
+  } else if (day === 'Dienstag') {
+    id = '6368';
+  } else if (day === 'Mittwoch') {
+    id = '6369';
+  } else if (day === 'Donnerstag') {
+    id = '6371';
+  } else if (day === 'Freitag') {
+    id = '6372';
+  }
+
+  fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
     if (res.status === 200) {
       res
         .json()
@@ -217,6 +245,31 @@ function checkIfUserAlreadyDidQuiz() {
           let resultFilteredByEmail = data.data.filter(
             (zeilen) => zeilen.email === email
           );
+
+          let dayLinks = [
+            {
+              day: 'Montag',
+              link: 'index.html',
+            },
+            {
+              day: 'Dienstag',
+              link: 'tuesday.html',
+            },
+            {
+              day: 'Mittwoch',
+              link: 'wednesday.html',
+            },
+            {
+              day: 'Donnerstag',
+              link: 'thursday.html',
+            },
+            {
+              day: 'Freitag',
+              link: 'friday.html',
+            },
+          ];
+          dayLinks = dayLinks.filter((object) => object.day !== day);
+
           if (
             resultFilteredByBenutzer.length > 0 &&
             resultFilteredByEmail.length > 0
@@ -224,8 +277,9 @@ function checkIfUserAlreadyDidQuiz() {
             closeModal();
             showModal({
               art: 'fehler',
-              messageText:
-                'Mit disem Benutzernamen und der E-Mail Adresse wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              messageText: `Mit disem Benutzernamen und der E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
+              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
@@ -235,8 +289,9 @@ function checkIfUserAlreadyDidQuiz() {
             closeModal();
             showModal({
               art: 'fehler',
-              messageText:
-                'Mit disem Benutzernamen wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              messageText: `Mit disem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
+              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
@@ -246,8 +301,9 @@ function checkIfUserAlreadyDidQuiz() {
             closeModal();
             showModal({
               art: 'fehler',
-              messageText:
-                'Mit diser E-Mail Adresse wurde das Quiz schon einmal absolviert, deswegen wird dein Ergebnis nicht gewertet.',
+              messageText: `Mit diser E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
+              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
               button1Text: '',
               button2Show: true,
@@ -275,14 +331,20 @@ function uploadAnswers(uploadData) {
     button2Show: false,
     button2Text: '',
   });
-  const gruppe = localStorage.getItem('gruppe');
+
   let id = '';
-  if (gruppe === '1') {
-    id = '5786';
+  if (day === 'Montag') {
+    id = '6245';
+  } else if (day === 'Dienstag') {
+    id = '6368';
+  } else if (day === 'Mittwoch') {
+    id = '6369';
+  } else if (day === 'Donnerstag') {
+    id = '6371';
+  } else if (day === 'Freitag') {
+    id = '6372';
   }
-  if (gruppe === '2') {
-    id = '5785';
-  }
+
   fetch(`https://api.apispreadsheets.com/data/${id}/`, {
     method: 'POST',
     body: JSON.stringify(uploadData),
@@ -295,51 +357,126 @@ function uploadAnswers(uploadData) {
   });
 }
 
-//Der Benutzer wird in die mit Email, Benutzername und Gruppe in die Tabelle Alle Benutzer eingetragen
+//Der Benutzer wird mit Email und Benutzername in die Tabelle Alle Benutzer eingetragen, solange für ihn noch kein Eintrag existiert
 function insertUser(uploadData) {
   let data = {};
-  data.gruppe = localStorage.getItem('gruppe');
   data.benutzername = uploadData.data.benutzername;
   data.email = uploadData.data.email;
   let dataToUpload = { data: data };
-  fetch('https://api.apispreadsheets.com/data/5861/', {
-    method: 'POST',
-    body: JSON.stringify(dataToUpload),
-  }).then((res) => {
-    if (res.status === 201) {
-      getResult(uploadData);
+
+  fetch('https://api.apispreadsheets.com/data/6286/').then((res) => {
+    if (res.status === 200) {
+      res
+        .json()
+        .then((data) => {
+          let resultFilteredByBenutzer = data.data.filter(
+            (zeilen) => zeilen.benutzername === dataToUpload.data.benutzername
+          );
+          let resultFilteredByEmail = data.data.filter(
+            (zeilen) => zeilen.email === dataToUpload.data.email
+          );
+
+          if (
+            resultFilteredByBenutzer.length === 0 ||
+            resultFilteredByEmail.length === 0
+          ) {
+            fetch('https://api.apispreadsheets.com/data/6286/', {
+              method: 'POST',
+              body: JSON.stringify(dataToUpload),
+            }).then((res) => {
+              if (res.status === 201) {
+                getResult(uploadData);
+              } else {
+                // ERROR
+              }
+            });
+          } else {
+            getResult(uploadData);
+          }
+        })
+
+        .catch((err) => console.log(err));
     } else {
       // ERROR
     }
   });
 }
 
-//Aus der Tabelle AUswertung Gruppe 1 oder 2 wird das Ergebnis an richtig beantworteten Fragen ausgelesen
+//Aus der Tabelle Auswertung Alle Benutzer wird das Ergebnis geladen
 function getResult(uploadData) {
-  const gruppe = localStorage.getItem('gruppe');
-  let id = '';
-  if (gruppe === '1') {
-    id = '5781';
-  }
-  if (gruppe === '2') {
-    id = '5783';
-  }
   const benutzer = uploadData.data.benutzername;
-  fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
+  fetch('https://api.apispreadsheets.com/data/6249/').then((res) => {
     if (res.status === 200) {
       res
         .json()
         .then((data) => {
-          let resultFilteredByBenutzer = data.data.filter(
+          let resultFiltered = data.data.filter(
             (zeilen) => zeilen.benutzername === benutzer
           );
 
-          let messageText = '';
-          if (resultFilteredByBenutzer[0].anzahlRichtigerAntworten === '1') {
-            messageText = 'Du hast 1 Frage richtig beantwortet';
+          let resultMonday = resultFiltered[0].ergebnisMontag;
+          let resultTuesday = resultFiltered[0].ergebnisDienstag;
+          let resultWednesday = resultFiltered[0].ergebnisMittwoch;
+          let resultThursday = resultFiltered[0].ergebnisDonnerstag;
+          let resultFriday = resultFiltered[0].ergebnisFreitag;
+
+          if (resultMonday === 'noch nicht teilgenommen') {
+            resultMonday = `<a href="./index.html">${resultMonday}</a>`;
+          } else if (resultMonday === '1') {
+            resultMonday = String(resultMonday) + ' Punkt';
           } else {
-            messageText = `Du hast ${resultFilteredByBenutzer[0].anzahlRichtigerAntworten} Fragen richtig beantwortet`;
+            resultMonday = String(resultMonday) + ' Punkte';
           }
+          if (resultTuesday === 'noch nicht teilgenommen') {
+            resultTuesday = `<a href="./tuesday.html">${resultTuesday}</a>`;
+          } else if (resultTuesday === '1') {
+            resultTuesday = String(resultTuesday) + ' Punkt';
+          } else {
+            resultTuesday = String(resultTuesday) + ' Punkte';
+          }
+          if (resultWednesday === 'noch nicht teilgenommen') {
+            resultWednesday = `<a href="./wednesday.html">${resultWednesday}</a>`;
+          } else if (resultWednesday === '1') {
+            resultWednesday = String(resultWednesday) + ' Punkt';
+          } else {
+            resultWednesday = String(resultWednesday) + ' Punkte';
+          }
+          if (resultThursday === 'noch nicht teilgenommen') {
+            resultThursday = `<a href="./thursday.html">${resultThursday}</a>`;
+          } else if (resultThursday === '1') {
+            resultThursday = String(resultThursday) + ' Punkt';
+          } else {
+            resultThursday = String(resultThursday) + ' Punkte';
+          }
+          if (resultFriday === 'noch nicht teilgenommen') {
+            resultFriday = `<a href="./friday.html">${resultFriday}</a>`;
+          } else if (resultFriday === '1') {
+            resultFriday = String(resultFriday) + ' Punkt';
+          } else {
+            resultFriday = String(resultFriday) + ' Punkte';
+          }
+
+          let currentDay = '';
+          if (day === 'Montag') {
+            currentDay = resultMonday;
+          } else if (day === 'Dienstag') {
+            currentDay = resultTuesday;
+          } else if (day === 'Mittwoch') {
+            currentDay = resultWednesday;
+          } else if (day === 'Donnerstag') {
+            currentDay = resultThursday;
+          } else if (day === 'Freitag') {
+            currentDay = resultFriday;
+          }
+
+          let messageText = '';
+          if (currentDay === '1 Punkt') {
+            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
+          } else {
+            const points = currentDay.split(' ');
+            messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
+          }
+
           closeModal();
           showModal({
             art: 'ergebnis',
