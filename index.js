@@ -1,9 +1,9 @@
 //Fragen werden von Google Sheets geladen
-let day = '';
+let day = ''
 function getQuestions(weekday) {
-  day = weekday;
-  const headline = document.getElementById('headline');
-  headline.innerHTML = 'Education Week Quiz ' + day;
+  day = weekday
+  const headline = document.getElementById('headline')
+  headline.innerHTML = 'Education Week Quiz ' + day
   fetch('https://api.apispreadsheets.com/data/6243/').then((res) => {
     if (res.status === 200) {
       res
@@ -12,133 +12,133 @@ function getQuestions(weekday) {
           if (day === 'Montag') {
             fragenDaten = fragenDaten.data.filter(
               (frage) => frage.Tag === 'Montag'
-            );
+            )
           }
           if (day === 'Dienstag') {
             fragenDaten = fragenDaten.data.filter(
               (frage) => frage.Tag === 'Dienstag'
-            );
+            )
           }
           if (day === 'Mittwoch') {
             fragenDaten = fragenDaten.data.filter(
               (frage) => frage.Tag === 'Mittwoch'
-            );
+            )
           }
           if (day === 'Donnerstag') {
             fragenDaten = fragenDaten.data.filter(
               (frage) => frage.Tag === 'Donnerstag'
-            );
+            )
           }
           if (day === 'Freitag') {
             fragenDaten = fragenDaten.data.filter(
               (frage) => frage.Tag === 'Freitag'
-            );
+            )
           }
 
-          setHTML(fragenDaten);
+          setHTML(fragenDaten)
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
     } else {
       // ERROR
     }
-  });
+  })
 }
 
 //Aus den geladenen Daten werden die Multiple-Choice Fragen gerendert
 function setHTML(fragenDaten) {
-  const form = document.getElementById('platzhalterFragen');
-  const platzhalterText = document.getElementById('platzhalterText');
-  platzhalterText.remove();
+  const form = document.getElementById('platzhalterFragen')
+  const platzhalterText = document.getElementById('platzhalterText')
+  platzhalterText.remove()
 
   fragenDaten.forEach((frage, index) => {
-    let i = index;
+    let i = index
 
     if (frage.Fragennummer !== '' && frage.Art !== 'Frage ausblenden') {
       if (fragenDaten[i].Art === 'Multiple-Choice 4 Antworten') {
         let template = document
           .getElementById('4RadioButtons')
-          .content.cloneNode(true);
-        const frage = template.querySelector('#frage');
+          .content.cloneNode(true)
+        const frage = template.querySelector('#frage')
         frage.innerHTML =
-          fragenDaten[i].Fragennummer + '. ' + fragenDaten[i].Frage;
-        const möglichkeit1 = template.querySelector('#möglichkeit1');
-        möglichkeit1.innerHTML = fragenDaten[i].Antwortmöglichkeit1;
-        const möglichkeit2 = template.querySelector('#möglichkeit2');
-        möglichkeit2.innerHTML = fragenDaten[i].Antwortmöglichkeit2;
-        const möglichkeit3 = template.querySelector('#möglichkeit3');
-        möglichkeit3.innerHTML = fragenDaten[i].Antwortmöglichkeit3;
-        const möglichkeit4 = template.querySelector('#möglichkeit4');
-        möglichkeit4.innerHTML = fragenDaten[i].Antwortmöglichkeit4;
+          fragenDaten[i].Fragennummer + '. ' + fragenDaten[i].Frage
+        const möglichkeit1 = template.querySelector('#möglichkeit1')
+        möglichkeit1.innerHTML = fragenDaten[i].Antwortmöglichkeit1
+        const möglichkeit2 = template.querySelector('#möglichkeit2')
+        möglichkeit2.innerHTML = fragenDaten[i].Antwortmöglichkeit2
+        const möglichkeit3 = template.querySelector('#möglichkeit3')
+        möglichkeit3.innerHTML = fragenDaten[i].Antwortmöglichkeit3
+        const möglichkeit4 = template.querySelector('#möglichkeit4')
+        möglichkeit4.innerHTML = fragenDaten[i].Antwortmöglichkeit4
 
-        const radios = template.querySelectorAll('input[type=radio]');
+        const radios = template.querySelectorAll('input[type=radio]')
         radios.forEach((radio, index) => {
-          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`);
+          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`)
           radio.setAttribute(
             'value',
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
-          );
-        });
+          )
+        })
 
-        form.appendChild(template);
+        form.appendChild(template)
       }
 
       if (fragenDaten[index].Art === 'Multiple-Choice 3 Antworten') {
         let template = document
           .getElementById('3RadioButtons')
-          .content.cloneNode(true);
-        const frage = template.querySelector('#frage');
+          .content.cloneNode(true)
+        const frage = template.querySelector('#frage')
         frage.innerHTML =
-          fragenDaten[index].Fragennummer + '. ' + fragenDaten[index].Frage;
-        const möglichkeit1 = template.querySelector('#möglichkeit1');
-        möglichkeit1.innerHTML = fragenDaten[index].Antwortmöglichkeit1;
-        const möglichkeit2 = template.querySelector('#möglichkeit2');
-        möglichkeit2.innerHTML = fragenDaten[index].Antwortmöglichkeit2;
-        const möglichkeit3 = template.querySelector('#möglichkeit3');
-        möglichkeit3.innerHTML = fragenDaten[index].Antwortmöglichkeit3;
+          fragenDaten[index].Fragennummer + '. ' + fragenDaten[index].Frage
+        const möglichkeit1 = template.querySelector('#möglichkeit1')
+        möglichkeit1.innerHTML = fragenDaten[index].Antwortmöglichkeit1
+        const möglichkeit2 = template.querySelector('#möglichkeit2')
+        möglichkeit2.innerHTML = fragenDaten[index].Antwortmöglichkeit2
+        const möglichkeit3 = template.querySelector('#möglichkeit3')
+        möglichkeit3.innerHTML = fragenDaten[index].Antwortmöglichkeit3
 
-        const radios = template.querySelectorAll('input[type=radio]');
+        const radios = template.querySelectorAll('input[type=radio]')
         radios.forEach((radio, index) => {
-          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`);
+          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`)
           radio.setAttribute(
             'value',
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
-          );
-        });
+          )
+        })
 
-        form.appendChild(template);
+        form.appendChild(template)
       }
 
       if (fragenDaten[index].Art === 'Multiple-Choice 2 Antworten') {
         let template = document
           .getElementById('2RadioButtons')
-          .content.cloneNode(true);
-        const frage = template.querySelector('#frage');
+          .content.cloneNode(true)
+        const frage = template.querySelector('#frage')
         frage.innerHTML =
-          fragenDaten[index].Fragennummer + '. ' + fragenDaten[index].Frage;
-        const möglichkeit1 = template.querySelector('#möglichkeit1');
-        möglichkeit1.innerHTML = fragenDaten[index].Antwortmöglichkeit1;
-        const möglichkeit2 = template.querySelector('#möglichkeit2');
-        möglichkeit2.innerHTML = fragenDaten[index].Antwortmöglichkeit2;
+          fragenDaten[index].Fragennummer + '. ' + fragenDaten[index].Frage
+        const möglichkeit1 = template.querySelector('#möglichkeit1')
+        möglichkeit1.innerHTML = fragenDaten[index].Antwortmöglichkeit1
+        const möglichkeit2 = template.querySelector('#möglichkeit2')
+        möglichkeit2.innerHTML = fragenDaten[index].Antwortmöglichkeit2
 
-        const radios = template.querySelectorAll('input[type=radio]');
+        const radios = template.querySelectorAll('input[type=radio]')
         radios.forEach((radio, index) => {
-          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`);
+          radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`)
           radio.setAttribute(
             'value',
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
-          );
-        });
+          )
+        })
 
-        form.appendChild(template);
+        form.appendChild(template)
       }
     }
-  });
+  })
 }
 
 //Bei Klick auf den Submit Button wird das Modal zur Bestätigung angezeigt
-const form = document.querySelector('#quizForm');
+const form = document.querySelector('#quizForm')
 form.addEventListener('submit', (event) => {
-  event.preventDefault();
+  event.preventDefault()
   showModal({
     art: 'hochladen',
     messageText:
@@ -147,8 +147,8 @@ form.addEventListener('submit', (event) => {
     button1Text: 'Ja',
     button2Show: true,
     button2Text: 'Nein',
-  });
-});
+  })
+})
 
 //Diese Funktion rendert die Modal e
 function showModal({
@@ -159,54 +159,54 @@ function showModal({
   button2Show,
   button2Text,
 }) {
-  const modal = document.getElementById('modal').content.cloneNode(true);
-  const message = modal.getElementById('message');
-  message.innerHTML = messageText;
+  const modal = document.getElementById('modal').content.cloneNode(true)
+  const message = modal.getElementById('message')
+  message.innerHTML = messageText
 
-  const button1 = modal.getElementById('button1');
+  const button1 = modal.getElementById('button1')
   if (button1Show === true) {
-    button1.innerHTML = button1Text;
+    button1.innerHTML = button1Text
   } else {
-    button1.remove();
+    button1.remove()
   }
-  const button2 = modal.getElementById('button2');
+  const button2 = modal.getElementById('button2')
   if (button2Show === true) {
-    button2.innerHTML = button2Text;
+    button2.innerHTML = button2Text
   } else {
-    button2.remove();
+    button2.remove()
   }
 
-  document.body.classList.add('confirm-alert-body-element');
-  document.body.appendChild(modal);
-  const overlay = document.querySelector('.confirm-alert-overlay');
+  document.body.classList.add('confirm-alert-body-element')
+  document.body.appendChild(modal)
+  const overlay = document.querySelector('.confirm-alert-overlay')
 
   overlay.addEventListener('click', (event) => {
     if (overlay === event.target) {
-      closeModal();
+      closeModal()
     }
-  });
+  })
 
   button2.addEventListener('click', () => {
-    closeModal();
-  });
+    closeModal()
+  })
   button1.addEventListener('click', () => {
     if (art === 'hochladen') {
-      checkIfUserAlreadyDidQuiz();
+      checkIfUserAlreadyDidQuiz()
     }
-  });
+  })
 }
 
 //Funktion zum Schließen der Modale
 function closeModal() {
-  document.body.classList.remove('confirm-alert-body-element');
-  const modal = document.querySelector('.confirm-alert-overlay');
-  modal.remove();
+  document.body.classList.remove('confirm-alert-body-element')
+  const modal = document.querySelector('.confirm-alert-overlay')
+  modal.remove()
 }
 
 //Diese Funktion überprüft anhand der Tabelle Alle Benutzer, ob der Benutzer schon einmal an dem Quiz teilgenommen hat
 function checkIfUserAlreadyDidQuiz() {
-  const formData = new FormData(form);
-  const data = Object.fromEntries(formData);
+  const formData = new FormData(form)
+  const data = Object.fromEntries(formData)
   let datum = new Date().toLocaleString('de-De', {
     day: '2-digit',
     month: '2-digit',
@@ -214,24 +214,24 @@ function checkIfUserAlreadyDidQuiz() {
     hour: 'numeric',
     minute: 'numeric',
     second: 'numeric',
-  });
-  data.datum = datum.slice(0, 10);
-  data.uhrzeit = datum.slice(12, 20);
-  let uploadData = { data: data };
-  const benutzer = uploadData.data.benutzername;
-  const email = uploadData.data.email;
+  })
+  data.datum = datum.slice(0, 10)
+  data.uhrzeit = datum.slice(12, 20)
+  let uploadData = { data: data }
+  const benutzer = uploadData.data.benutzername
+  const email = uploadData.data.email
 
-  let id = '';
+  let id = ''
   if (day === 'Montag') {
-    id = '6245';
+    id = '6245'
   } else if (day === 'Dienstag') {
-    id = '6368';
+    id = '6368'
   } else if (day === 'Mittwoch') {
-    id = '6369';
+    id = '6369'
   } else if (day === 'Donnerstag') {
-    id = '6371';
+    id = '6371'
   } else if (day === 'Freitag') {
-    id = '6372';
+    id = '6372'
   }
 
   fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
@@ -241,10 +241,10 @@ function checkIfUserAlreadyDidQuiz() {
         .then((data) => {
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === benutzer
-          );
+          )
           let resultFilteredByEmail = data.data.filter(
             (zeilen) => zeilen.email === email
-          );
+          )
 
           let dayLinks = [
             {
@@ -267,14 +267,14 @@ function checkIfUserAlreadyDidQuiz() {
               day: 'Freitag',
               link: 'friday.html',
             },
-          ];
-          dayLinks = dayLinks.filter((object) => object.day !== day);
+          ]
+          dayLinks = dayLinks.filter((object) => object.day !== day)
 
           if (
             resultFilteredByBenutzer.length > 0 &&
             resultFilteredByEmail.length > 0
           ) {
-            closeModal();
+            closeModal()
             showModal({
               art: 'fehler',
               messageText: `Mit diesem Benutzernamen und der E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
@@ -284,9 +284,9 @@ function checkIfUserAlreadyDidQuiz() {
               button1Text: '',
               button2Show: true,
               button2Text: 'Hinweis schließen',
-            });
+            })
           } else if (resultFilteredByBenutzer.length > 0) {
-            closeModal();
+            closeModal()
             showModal({
               art: 'fehler',
               messageText: `Mit diesem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
@@ -296,9 +296,9 @@ function checkIfUserAlreadyDidQuiz() {
               button1Text: '',
               button2Show: true,
               button2Text: 'Hinweis schließen',
-            });
+            })
           } else if (resultFilteredByEmail.length > 0) {
-            closeModal();
+            closeModal()
             showModal({
               art: 'fehler',
               messageText: `Mit diser E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
@@ -308,21 +308,21 @@ function checkIfUserAlreadyDidQuiz() {
               button1Text: '',
               button2Show: true,
               button2Text: 'Hinweis schließen',
-            });
+            })
           } else {
-            uploadAnswers(uploadData);
+            uploadAnswers(uploadData)
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
     } else {
       // ERROR
     }
-  });
+  })
 }
 
 //Wenn der Benutzer noch nicht teilgenommen hat, werden seine Antworten hochgeladen
 function uploadAnswers(uploadData) {
-  closeModal();
+  closeModal()
   showModal({
     art: 'warten',
     messageText: 'Bitte warte kurz, deine Antworten werden ausgewertet',
@@ -330,19 +330,19 @@ function uploadAnswers(uploadData) {
     button1Text: '',
     button2Show: false,
     button2Text: '',
-  });
+  })
 
-  let id = '';
+  let id = ''
   if (day === 'Montag') {
-    id = '6245';
+    id = '6245'
   } else if (day === 'Dienstag') {
-    id = '6368';
+    id = '6368'
   } else if (day === 'Mittwoch') {
-    id = '6369';
+    id = '6369'
   } else if (day === 'Donnerstag') {
-    id = '6371';
+    id = '6371'
   } else if (day === 'Freitag') {
-    id = '6372';
+    id = '6372'
   }
 
   fetch(`https://api.apispreadsheets.com/data/${id}/`, {
@@ -350,19 +350,19 @@ function uploadAnswers(uploadData) {
     body: JSON.stringify(uploadData),
   }).then((res) => {
     if (res.status === 201) {
-      insertUser(uploadData);
+      insertUser(uploadData)
     } else {
       // ERROR
     }
-  });
+  })
 }
 
 //Der Benutzer wird mit Email und Benutzername in die Tabelle Alle Benutzer eingetragen, solange für ihn noch kein Eintrag existiert
 function insertUser(uploadData) {
-  let data = {};
-  data.benutzername = uploadData.data.benutzername;
-  data.email = uploadData.data.email;
-  let dataToUpload = { data: data };
+  let data = {}
+  data.benutzername = uploadData.data.benutzername
+  data.email = uploadData.data.email
+  let dataToUpload = { data: data }
 
   fetch('https://api.apispreadsheets.com/data/6286/').then((res) => {
     if (res.status === 200) {
@@ -371,10 +371,10 @@ function insertUser(uploadData) {
         .then((data) => {
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === dataToUpload.data.benutzername
-          );
+          )
           let resultFilteredByEmail = data.data.filter(
             (zeilen) => zeilen.email === dataToUpload.data.email
-          );
+          )
 
           if (
             resultFilteredByBenutzer.length === 0 ||
@@ -385,26 +385,26 @@ function insertUser(uploadData) {
               body: JSON.stringify(dataToUpload),
             }).then((res) => {
               if (res.status === 201) {
-                getResult(uploadData);
+                getResult(uploadData)
               } else {
                 // ERROR
               }
-            });
+            })
           } else {
-            getResult(uploadData);
+            getResult(uploadData)
           }
         })
 
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
     } else {
       // ERROR
     }
-  });
+  })
 }
 
 //Aus der Tabelle Auswertung Alle Benutzer wird das Ergebnis geladen
 function getResult(uploadData) {
-  const benutzer = uploadData.data.benutzername;
+  const benutzer = uploadData.data.benutzername
   fetch('https://api.apispreadsheets.com/data/6249/').then((res) => {
     if (res.status === 200) {
       res
@@ -412,72 +412,72 @@ function getResult(uploadData) {
         .then((data) => {
           let resultFiltered = data.data.filter(
             (zeilen) => zeilen.benutzername === benutzer
-          );
+          )
 
-          let resultMonday = resultFiltered[0].ergebnisMontag;
-          let resultTuesday = resultFiltered[0].ergebnisDienstag;
-          let resultWednesday = resultFiltered[0].ergebnisMittwoch;
-          let resultThursday = resultFiltered[0].ergebnisDonnerstag;
-          let resultFriday = resultFiltered[0].ergebnisFreitag;
+          let resultMonday = resultFiltered[0].ergebnisMontag
+          let resultTuesday = resultFiltered[0].ergebnisDienstag
+          let resultWednesday = resultFiltered[0].ergebnisMittwoch
+          let resultThursday = resultFiltered[0].ergebnisDonnerstag
+          let resultFriday = resultFiltered[0].ergebnisFreitag
 
           if (resultMonday === 'noch nicht teilgenommen') {
-            resultMonday = `<a href="./index.html">${resultMonday}</a>`;
+            resultMonday = `<a href="./index.html">${resultMonday}</a>`
           } else if (resultMonday === '1') {
-            resultMonday = String(resultMonday) + ' Punkt';
+            resultMonday = String(resultMonday) + ' Punkt'
           } else {
-            resultMonday = String(resultMonday) + ' Punkte';
+            resultMonday = String(resultMonday) + ' Punkte'
           }
           if (resultTuesday === 'noch nicht teilgenommen') {
-            resultTuesday = `<a href="./tuesday.html">${resultTuesday}</a>`;
+            resultTuesday = `<a href="./tuesday.html">${resultTuesday}</a>`
           } else if (resultTuesday === '1') {
-            resultTuesday = String(resultTuesday) + ' Punkt';
+            resultTuesday = String(resultTuesday) + ' Punkt'
           } else {
-            resultTuesday = String(resultTuesday) + ' Punkte';
+            resultTuesday = String(resultTuesday) + ' Punkte'
           }
           if (resultWednesday === 'noch nicht teilgenommen') {
-            resultWednesday = `<a href="./wednesday.html">${resultWednesday}</a>`;
+            resultWednesday = `<a href="./wednesday.html">${resultWednesday}</a>`
           } else if (resultWednesday === '1') {
-            resultWednesday = String(resultWednesday) + ' Punkt';
+            resultWednesday = String(resultWednesday) + ' Punkt'
           } else {
-            resultWednesday = String(resultWednesday) + ' Punkte';
+            resultWednesday = String(resultWednesday) + ' Punkte'
           }
           if (resultThursday === 'noch nicht teilgenommen') {
-            resultThursday = `<a href="./thursday.html">${resultThursday}</a>`;
+            resultThursday = `<a href="./thursday.html">${resultThursday}</a>`
           } else if (resultThursday === '1') {
-            resultThursday = String(resultThursday) + ' Punkt';
+            resultThursday = String(resultThursday) + ' Punkt'
           } else {
-            resultThursday = String(resultThursday) + ' Punkte';
+            resultThursday = String(resultThursday) + ' Punkte'
           }
           if (resultFriday === 'noch nicht teilgenommen') {
-            resultFriday = `<a href="./friday.html">${resultFriday}</a>`;
+            resultFriday = `<a href="./friday.html">${resultFriday}</a>`
           } else if (resultFriday === '1') {
-            resultFriday = String(resultFriday) + ' Punkt';
+            resultFriday = String(resultFriday) + ' Punkt'
           } else {
-            resultFriday = String(resultFriday) + ' Punkte';
+            resultFriday = String(resultFriday) + ' Punkte'
           }
 
-          let currentDay = '';
+          let currentDay = ''
           if (day === 'Montag') {
-            currentDay = resultMonday;
+            currentDay = resultMonday
           } else if (day === 'Dienstag') {
-            currentDay = resultTuesday;
+            currentDay = resultTuesday
           } else if (day === 'Mittwoch') {
-            currentDay = resultWednesday;
+            currentDay = resultWednesday
           } else if (day === 'Donnerstag') {
-            currentDay = resultThursday;
+            currentDay = resultThursday
           } else if (day === 'Freitag') {
-            currentDay = resultFriday;
+            currentDay = resultFriday
           }
 
-          let messageText = '';
+          let messageText = ''
           if (currentDay === '1 Punkt') {
-            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
+            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`
           } else {
-            const points = currentDay.split(' ');
-            messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`;
+            const points = currentDay.split(' ')
+            messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`
           }
 
-          closeModal();
+          closeModal()
           showModal({
             art: 'ergebnis',
             messageText: messageText,
@@ -485,11 +485,11 @@ function getResult(uploadData) {
             button1Text: '',
             button2Show: true,
             button2Text: 'Hinweis schließen',
-          });
+          })
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
     } else {
       // ERROR
     }
-  });
+  })
 }
