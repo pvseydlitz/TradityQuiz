@@ -150,7 +150,7 @@ form.addEventListener('submit', (event) => {
   });
 });
 
-//Diese Funktion rendert das Modal
+//Diese Funktion rendert die Modal e
 function showModal({
   art,
   messageText,
@@ -196,7 +196,7 @@ function showModal({
   });
 }
 
-//Funktion zum Schließen des Modales
+//Funktion zum Schließen der Modale
 function closeModal() {
   document.body.classList.remove('confirm-alert-body-element');
   const modal = document.querySelector('.confirm-alert-overlay');
@@ -277,7 +277,7 @@ function checkIfUserAlreadyDidQuiz() {
             closeModal();
             showModal({
               art: 'fehler',
-              messageText: `Mit disem Benutzernamen und der E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              messageText: `Mit diesem Benutzernamen und der E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
               <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
               <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
@@ -289,7 +289,7 @@ function checkIfUserAlreadyDidQuiz() {
             closeModal();
             showModal({
               art: 'fehler',
-              messageText: `Mit disem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              messageText: `Mit diesem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
               <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
               <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
