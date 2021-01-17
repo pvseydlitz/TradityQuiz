@@ -21,25 +21,6 @@
           </p>
           <form name="quiz" id="quizForm" class="mb-4">
             <div class="mb-4">
-              <label for="exampleInputEmail1" class="form-label text-orange"
-                ><b>E-Mail Adresse</b></label
-              >
-              <input
-                type="text"
-                name="email"
-                class="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                required
-              />
-              <div id="emailHelp" class="form-text">
-                Damit dir das Kapital gutgeschrieben werden kann, musst du hier
-                die gleiche E-Mail Adresse angeben wie bei der App für das
-                Börsenspiel.
-              </div>
-            </div>
-
-            <div class="mb-4">
               <label for="exampleInputPassword1" class="form-label text-orange"
                 ><b>Benutzername</b></label
               >
@@ -52,8 +33,9 @@
                 required
               />
               <div id="nutzernameHelp" class="form-text">
-                Auch der Benutzername muss mit dem aus der Börsenspiel App
-                übereinstimmen.
+                Damit dir das Kapital gutgeschrieben werden kann, musst du hier
+                den gleichen Benutzernamen angeben wie bei der App für das
+                Börsenspiel.
               </div>
             </div>
             <div id="platzhalterFragen">
@@ -194,6 +176,7 @@
 
     <!-- <script src="./Bootstrap/js/bootstrap.min.js"></script> -->
     <script defer src="./index.js"></script>
+    <script defer src="./config.js"></script>
     <script>
       window.addEventListener('load', () => {
         const weekday = 'Montag'

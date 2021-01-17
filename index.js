@@ -1,6 +1,7 @@
 //Fragen werden von Google Sheets geladen
 let day = ''
 function getQuestions(weekday) {
+  //console.log(keys)
   day = weekday
   const headline = document.getElementById('headline')
   headline.innerHTML = 'Education Week Quiz ' + day
