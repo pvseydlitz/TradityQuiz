@@ -4,7 +4,10 @@ function getQuestions(weekday) {
   day = weekday
   const headline = document.getElementById('headline')
   headline.innerHTML = 'Education Week Quiz ' + day
-  fetch('https://api.apispreadsheets.com/data/6243/').then((res) => {
+
+  fetch(
+    `https://api.apispreadsheets.com/data/${keys[0].id}/?accessKey=${keys[0].accessKey}&secretKey=${keys[0].secretKey}`
+  ).then((res) => {
     if (res.status === 200) {
       res
         .json()
@@ -219,31 +222,29 @@ function checkIfUserAlreadyDidQuiz() {
   data.uhrzeit = datum.slice(12, 20)
   let uploadData = { data: data }
   const benutzer = uploadData.data.benutzername
-  const email = uploadData.data.email
 
-  let id = ''
+  let indexKeys = 0
   if (day === 'Montag') {
-    id = '6245'
+    indexKeys = 1
   } else if (day === 'Dienstag') {
-    id = '6368'
+    indexKeys = 2
   } else if (day === 'Mittwoch') {
-    id = '6369'
+    indexKeys = 3
   } else if (day === 'Donnerstag') {
-    id = '6371'
+    indexKeys = 4
   } else if (day === 'Freitag') {
-    id = '6372'
+    indexKeys = 5
   }
 
-  fetch(`https://api.apispreadsheets.com/data/${id}/`).then((res) => {
+  fetch(
+    `https://api.apispreadsheets.com/data/${keys[indexKeys].id}/?accessKey=${keys[indexKeys].accessKey}&secretKey=${keys[indexKeys].secretKey}`
+  ).then((res) => {
     if (res.status === 200) {
       res
         .json()
         .then((data) => {
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === benutzer
-          )
-          let resultFilteredByEmail = data.data.filter(
-            (zeilen) => zeilen.email === email
           )
 
           let dayLinks = [
@@ -270,38 +271,11 @@ function checkIfUserAlreadyDidQuiz() {
           ]
           dayLinks = dayLinks.filter((object) => object.day !== day)
 
-          if (
-            resultFilteredByBenutzer.length > 0 &&
-            resultFilteredByEmail.length > 0
-          ) {
-            closeModal()
-            showModal({
-              art: 'fehler',
-              messageText: `Mit diesem Benutzernamen und der E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
-              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
-              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
-              button1Show: false,
-              button1Text: '',
-              button2Show: true,
-              button2Text: 'Hinweis schließen',
-            })
-          } else if (resultFilteredByBenutzer.length > 0) {
+          if (resultFilteredByBenutzer.length > 0) {
             closeModal()
             showModal({
               art: 'fehler',
               messageText: `Mit diesem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
-              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
-              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
-              button1Show: false,
-              button1Text: '',
-              button2Show: true,
-              button2Text: 'Hinweis schließen',
-            })
-          } else if (resultFilteredByEmail.length > 0) {
-            closeModal()
-            showModal({
-              art: 'fehler',
-              messageText: `Mit diser E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
               <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
               <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
@@ -332,21 +306,25 @@ function uploadAnswers(uploadData) {
     button2Text: '',
   })
 
-  let id = ''
+  let indexKeys = 0
   if (day === 'Montag') {
-    id = '6245'
+    indexKeys = 1
   } else if (day === 'Dienstag') {
-    id = '6368'
+    indexKeys = 2
   } else if (day === 'Mittwoch') {
-    id = '6369'
+    indexKeys = 3
   } else if (day === 'Donnerstag') {
-    id = '6371'
+    indexKeys = 4
   } else if (day === 'Freitag') {
-    id = '6372'
+    indexKeys = 5
   }
 
-  fetch(`https://api.apispreadsheets.com/data/${id}/`, {
+  fetch(`https://api.apispreadsheets.com/data/${keys[indexKeys].id}/`, {
     method: 'POST',
+    headers: {
+      accessKey: keys[indexKeys].accessKey,
+      secretKey: keys[indexKeys].secretKey,
+    },
     body: JSON.stringify(uploadData),
   }).then((res) => {
     if (res.status === 201) {
@@ -364,7 +342,9 @@ function insertUser(uploadData) {
   data.email = uploadData.data.email
   let dataToUpload = { data: data }
 
-  fetch('https://api.apispreadsheets.com/data/6286/').then((res) => {
+  fetch(
+    `https://api.apispreadsheets.com/data/${keys[6].id}/?accessKey=${keys[6].accessKey}&secretKey=${keys[6].secretKey}`
+  ).then((res) => {
     if (res.status === 200) {
       res
         .json()
@@ -372,16 +352,14 @@ function insertUser(uploadData) {
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === dataToUpload.data.benutzername
           )
-          let resultFilteredByEmail = data.data.filter(
-            (zeilen) => zeilen.email === dataToUpload.data.email
-          )
 
-          if (
-            resultFilteredByBenutzer.length === 0 ||
-            resultFilteredByEmail.length === 0
-          ) {
-            fetch('https://api.apispreadsheets.com/data/6286/', {
+          if (resultFilteredByBenutzer.length === 0) {
+            fetch(`https://api.apispreadsheets.com/data/${keys[6].id}/`, {
               method: 'POST',
+              headers: {
+                accessKey: keys[6].accessKey,
+                secretKey: keys[6].secretKey,
+              },
               body: JSON.stringify(dataToUpload),
             }).then((res) => {
               if (res.status === 201) {
@@ -405,7 +383,9 @@ function insertUser(uploadData) {
 //Aus der Tabelle Auswertung Alle Benutzer wird das Ergebnis geladen
 function getResult(uploadData) {
   const benutzer = uploadData.data.benutzername
-  fetch('https://api.apispreadsheets.com/data/6249/').then((res) => {
+  fetch(
+    `https://api.apispreadsheets.com/data/${keys[7].id}/?accessKey=${keys[7].accessKey}&secretKey=${keys[7].secretKey}`
+  ).then((res) => {
     if (res.status === 200) {
       res
         .json()
@@ -471,10 +451,10 @@ function getResult(uploadData) {
 
           let messageText = ''
           if (currentDay === '1 Punkt') {
-            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`
+            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Durch das Quiz hast du dir aktuell <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet.`
           } else {
             const points = currentDay.split(' ')
-            messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}`
+            messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Durch das Quiz hast du dir aktuell <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet.`
           }
 
           closeModal()
