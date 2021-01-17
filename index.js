@@ -243,9 +243,6 @@ function checkIfUserAlreadyDidQuiz() {
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === benutzer
           )
-          let resultFilteredByEmail = data.data.filter(
-            (zeilen) => zeilen.email === email
-          )
 
           let dayLinks = [
             {
@@ -271,38 +268,11 @@ function checkIfUserAlreadyDidQuiz() {
           ]
           dayLinks = dayLinks.filter((object) => object.day !== day)
 
-          if (
-            resultFilteredByBenutzer.length > 0 &&
-            resultFilteredByEmail.length > 0
-          ) {
-            closeModal()
-            showModal({
-              art: 'fehler',
-              messageText: `Mit diesem Benutzernamen und der E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
-              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
-              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
-              button1Show: false,
-              button1Text: '',
-              button2Show: true,
-              button2Text: 'Hinweis schließen',
-            })
-          } else if (resultFilteredByBenutzer.length > 0) {
+          if (resultFilteredByBenutzer.length > 0) {
             closeModal()
             showModal({
               art: 'fehler',
               messageText: `Mit diesem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
-              <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
-              <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
-              button1Show: false,
-              button1Text: '',
-              button2Show: true,
-              button2Text: 'Hinweis schließen',
-            })
-          } else if (resultFilteredByEmail.length > 0) {
-            closeModal()
-            showModal({
-              art: 'fehler',
-              messageText: `Mit diser E-Mail Adresse wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
               <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
               <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
@@ -373,14 +343,8 @@ function insertUser(uploadData) {
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === dataToUpload.data.benutzername
           )
-          let resultFilteredByEmail = data.data.filter(
-            (zeilen) => zeilen.email === dataToUpload.data.email
-          )
 
-          if (
-            resultFilteredByBenutzer.length === 0 ||
-            resultFilteredByEmail.length === 0
-          ) {
+          if (resultFilteredByBenutzer.length === 0) {
             fetch('https://api.apispreadsheets.com/data/6286/', {
               method: 'POST',
               body: JSON.stringify(dataToUpload),
