@@ -2,12 +2,12 @@
   background-color: black;
 }
 .text-orange {
-  color: #f1592a;
+  color: #ff8840;
 }
 .btn-orange {
   color: #fff;
-  background-color: #f1592a;
-  border-color: #f1592a;
+  background-color: #ff8840;
+  border-color: #ff8840;
 }
 
 body.confirm-alert-body-element {

@@ -43,6 +43,14 @@ function getQuestions(weekday) {
         .catch((err) => console.log(err))
     } else {
       // ERROR
+      showModal({
+        art: 'fehler',
+        messageText: `Beim dem Quiz ist leider ein technischer Fehler aufgetreten. Versuche es bitte nochmal, indem du die Seite neu lädst. Wenn es weiterhin nicht funktioniert, schicke bitte eine kurze Email an <a href="mailto:support@tradity.de?subject=Quiz Fehler 401 bei Tabelle ${keys[0].id} Fragen">support@tradity.de</a>.`,
+        button1Show: false,
+        button1Text: '',
+        button2Show: true,
+        button2Text: 'Hinweis schließen',
+      })
     }
   })
 }
@@ -220,6 +228,7 @@ function checkIfUserAlreadyDidQuiz() {
   })
   data.datum = datum.slice(0, 10)
   data.uhrzeit = datum.slice(12, 20)
+  data.benutzername = data.benutzername.toLowerCase()
   let uploadData = { data: data }
   const benutzer = uploadData.data.benutzername
 
@@ -274,7 +283,7 @@ function checkIfUserAlreadyDidQuiz() {
           if (resultFilteredByBenutzer.length > 0) {
             closeModal()
             showModal({
-              art: 'fehler',
+              art: 'nutzername vergeben',
               messageText: `Mit diesem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
               <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
               <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
@@ -290,6 +299,14 @@ function checkIfUserAlreadyDidQuiz() {
         .catch((err) => console.log(err))
     } else {
       // ERROR
+      showModal({
+        art: 'fehler',
+        messageText: `Beim dem Quiz ist leider ein technischer Fehler aufgetreten. Versuche es bitte nochmal, indem du die Seite neu lädst. Wenn es weiterhin nicht funktioniert, schicke bitte eine kurze Email an <a href="mailto:support@tradity.de?subject=Quiz Fehler 401 bei Tabelle ${keys[indexKeys].id} Antworten ${day}">support@tradity.de</a>.`,
+        button1Show: false,
+        button1Text: '',
+        button2Show: true,
+        button2Text: 'Hinweis schließen',
+      })
     }
   })
 }
@@ -331,6 +348,14 @@ function uploadAnswers(uploadData) {
       insertUser(uploadData)
     } else {
       // ERROR
+      showModal({
+        art: 'fehler',
+        messageText: `Beim dem Quiz ist leider ein technischer Fehler aufgetreten. Versuche es bitte nochmal, indem du die Seite neu lädst. Wenn es weiterhin nicht funktioniert, schicke bitte eine kurze Email an <a href="mailto:support@tradity.de?subject=Quiz Fehler 401 bei Tabelle ${keys[indexKeys].id} Antworten ${day}">support@tradity.de</a>.`,
+        button1Show: false,
+        button1Text: '',
+        button2Show: true,
+        button2Text: 'Hinweis schließen',
+      })
     }
   })
 }
@@ -376,6 +401,14 @@ function insertUser(uploadData) {
         .catch((err) => console.log(err))
     } else {
       // ERROR
+      showModal({
+        art: 'fehler',
+        messageText: `Beim dem Quiz ist leider ein technischer Fehler aufgetreten. Versuche es bitte nochmal, indem du die Seite neu lädst. Wenn es weiterhin nicht funktioniert, schicke bitte eine kurze Email an <a href="mailto:support@tradity.de?subject=Quiz Fehler 401 bei Tabelle ${keys[6].id} Tabelle alle Benutzer">support@tradity.de</a>.`,
+        button1Show: false,
+        button1Text: '',
+        button2Show: true,
+        button2Text: 'Hinweis schließen',
+      })
     }
   })
 }
@@ -470,6 +503,14 @@ function getResult(uploadData) {
         .catch((err) => console.log(err))
     } else {
       // ERROR
+      showModal({
+        art: 'fehler',
+        messageText: `Beim dem Quiz ist leider ein technischer Fehler aufgetreten. Versuche es bitte nochmal, indem du die Seite neu lädst. Wenn es weiterhin nicht funktioniert, schicke bitte eine kurze Email an <a href="mailto:support@tradity.de?subject=Quiz Fehler 401 bei Tabelle ${keys[7].id} Tabelle Auswertung Benutzer">support@tradity.de</a>.`,
+        button1Show: false,
+        button1Text: '',
+        button2Show: true,
+        button2Text: 'Hinweis schließen',
+      })
     }
   })
 }
