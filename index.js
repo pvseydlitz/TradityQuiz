@@ -161,7 +161,7 @@ form.addEventListener('submit', (event) => {
   })
 })
 
-//Diese Funktion rendert die Modal e
+//Diese Funktion rendert die Modale
 function showModal({
   art,
   messageText,
@@ -485,6 +485,14 @@ function getResult(uploadData) {
           let messageText = ''
           if (currentDay === '1 Punkt') {
             messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Durch das Quiz hast du dir aktuell <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet.`
+          } else if (
+            resultMonday.includes('Punkte') &&
+            resultTuesday.includes('Punkte') &&
+            resultWednesday.includes('Punkte') &&
+            resultThursday.includes('Punkte') &&
+            resultFriday.includes('Punkte')
+          ) {
+            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Glüchwunsch, du hast an allen 5 Quiz erfolgreich teilgenommen und dir dadurch insgesamt <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet!`
           } else {
             const points = currentDay.split(' ')
             messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Durch das Quiz hast du dir aktuell <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet.`
