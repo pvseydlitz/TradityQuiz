@@ -228,10 +228,9 @@ function checkIfUserAlreadyDidQuiz() {
   })
   data.datum = datum.slice(0, 10)
   data.uhrzeit = datum.slice(12, 20)
-  data.benutzername = data.benutzername.toLowerCase()
+  data.benutzername = data.benutzername.toLowerCase().trim()
   let uploadData = { data: data }
   const benutzer = uploadData.data.benutzername
-
   let indexKeys = 0
   if (day === 'Montag') {
     indexKeys = 1
@@ -360,11 +359,10 @@ function uploadAnswers(uploadData) {
   })
 }
 
-//Der Benutzer wird mit Email und Benutzername in die Tabelle Alle Benutzer eingetragen, solange für ihn noch kein Eintrag existiert
+//Der Benutzer wird mit Benutzername in die Tabelle Alle Benutzer eingetragen, solange für ihn noch kein Eintrag existiert
 function insertUser(uploadData) {
   let data = {}
   data.benutzername = uploadData.data.benutzername
-  data.email = uploadData.data.email
   let dataToUpload = { data: data }
 
   fetch(
@@ -377,7 +375,6 @@ function insertUser(uploadData) {
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === dataToUpload.data.benutzername
           )
-
           if (resultFilteredByBenutzer.length === 0) {
             fetch(`https://api.apispreadsheets.com/data/${keys[6].id}/`, {
               method: 'POST',
@@ -492,7 +489,8 @@ function getResult(uploadData) {
             resultThursday.includes('Punkte') &&
             resultFriday.includes('Punkte')
           ) {
-            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Glüchwunsch, du hast an allen 5 Quiz erfolgreich teilgenommen und dir dadurch insgesamt <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet!`
+            const points = currentDay.split(' ')
+            messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Glüchwunsch, du hast an allen 5 Quiz erfolgreich teilgenommen und dir dadurch insgesamt <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet!`
           } else {
             const points = currentDay.split(' ')
             messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Durch das Quiz hast du dir aktuell <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet.`
