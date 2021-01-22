@@ -83,11 +83,17 @@ function setHTML(fragenDaten) {
 
         const radios = template.querySelectorAll('input[type=radio]')
         radios.forEach((radio, index) => {
+          radio.setAttribute('id', `frage${i + 1}radio${index + 1}`)
           radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`)
           radio.setAttribute(
             'value',
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           )
+        })
+
+        const labels = template.querySelectorAll('.form-check-label')
+        labels.forEach((label, index) => {
+          label.setAttribute('for', `frage${i + 1}radio${index + 1}`)
         })
 
         form.appendChild(template)
@@ -109,11 +115,17 @@ function setHTML(fragenDaten) {
 
         const radios = template.querySelectorAll('input[type=radio]')
         radios.forEach((radio, index) => {
+          radio.setAttribute('id', `frage${i + 1}radio${index + 1}`)
           radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`)
           radio.setAttribute(
             'value',
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           )
+        })
+
+        const labels = template.querySelectorAll('.form-check-label')
+        labels.forEach((label, index) => {
+          label.setAttribute('for', `frage${i + 1}radio${index + 1}`)
         })
 
         form.appendChild(template)
@@ -133,11 +145,17 @@ function setHTML(fragenDaten) {
 
         const radios = template.querySelectorAll('input[type=radio]')
         radios.forEach((radio, index) => {
+          radio.setAttribute('id', `frage${i + 1}radio${index + 1}`)
           radio.setAttribute('name', `frage${fragenDaten[i].Fragennummer}`)
           radio.setAttribute(
             'value',
             fragenDaten[i][`Antwortmöglichkeit${index + 1}`]
           )
+        })
+
+        const labels = template.querySelectorAll('.form-check-label')
+        labels.forEach((label, index) => {
+          label.setAttribute('for', `frage${i + 1}radio${index + 1}`)
         })
 
         form.appendChild(template)
@@ -189,13 +207,15 @@ function showModal({
 
   document.body.classList.add('confirm-alert-body-element')
   document.body.appendChild(modal)
-  const overlay = document.querySelector('.confirm-alert-overlay')
 
-  overlay.addEventListener('click', (event) => {
-    if (overlay === event.target) {
-      closeModal()
-    }
-  })
+  const overlay = document.querySelector('.confirm-alert-overlay')
+  if (art !== 'warten') {
+    overlay.addEventListener('click', (event) => {
+      if (overlay === event.target) {
+        closeModal()
+      }
+    })
+  }
 
   button2.addEventListener('click', () => {
     closeModal()
@@ -251,10 +271,11 @@ function checkIfUserAlreadyDidQuiz() {
       res
         .json()
         .then((data) => {
+          console.log(data)
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === benutzer
           )
-
+          console.log(resultFilteredByBenutzer)
           let dayLinks = [
             {
               day: 'Montag',
@@ -321,7 +342,6 @@ function uploadAnswers(uploadData) {
     button2Show: false,
     button2Text: '',
   })
-
   let indexKeys = 0
   if (day === 'Montag') {
     indexKeys = 1
@@ -480,17 +500,18 @@ function getResult(uploadData) {
           }
 
           let messageText = ''
-          if (currentDay === '1 Punkt') {
-            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Durch das Quiz hast du dir aktuell <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet.`
-          } else if (
-            resultMonday.includes('Punkte') &&
-            resultTuesday.includes('Punkte') &&
-            resultWednesday.includes('Punkte') &&
-            resultThursday.includes('Punkte') &&
-            resultFriday.includes('Punkte')
+          if (
+            resultFiltered[0].ergebnisMontag !== 'noch nicht teilgenommen' &&
+            resultFiltered[0].ergebnisDienstag !== 'noch nicht teilgenommen' &&
+            resultFiltered[0].ergebnisMittwoch !== 'noch nicht teilgenommen' &&
+            resultFiltered[0].ergebnisDonnerstag !==
+              'noch nicht teilgenommen' &&
+            resultFiltered[0].ergebnisFreitag !== 'noch nicht teilgenommen'
           ) {
             const points = currentDay.split(' ')
             messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Glüchwunsch, du hast an allen 5 Quiz erfolgreich teilgenommen und dir dadurch insgesamt <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet!`
+          } else if (currentDay === '1 Punkt') {
+            messageText = `Du hast <b>1</b> Frage richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Durch das Quiz hast du dir aktuell <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet.`
           } else {
             const points = currentDay.split(' ')
             messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Durch das Quiz hast du dir aktuell <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet.`
