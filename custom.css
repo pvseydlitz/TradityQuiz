@@ -9,7 +9,12 @@
   background-color: #ff8840;
   border-color: #ff8840;
 }
-
+.form-check-label {
+  cursor: pointer;
+}
+input[type='radio'] {
+  cursor: pointer;
+}
 body.confirm-alert-body-element {
   overflow: hidden;
 }
