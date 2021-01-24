@@ -208,14 +208,14 @@ function showModal({
   document.body.classList.add('confirm-alert-body-element')
   document.body.appendChild(modal)
 
-  const overlay = document.querySelector('.confirm-alert-overlay')
+  /* const overlay = document.querySelector('.confirm-alert-overlay')
   if (art !== 'warten') {
     overlay.addEventListener('click', (event) => {
       if (overlay === event.target) {
         closeModal()
       }
     })
-  }
+  } */
 
   button2.addEventListener('click', () => {
     closeModal()
@@ -450,35 +450,35 @@ function getResult(uploadData) {
           let resultThursday = resultFiltered[0].ergebnisDonnerstag
           let resultFriday = resultFiltered[0].ergebnisFreitag
 
-          if (resultMonday === 'noch nicht teilgenommen') {
+          if (resultMonday === 'Jetzt teilnehmen!') {
             resultMonday = `<a href="./index.html">${resultMonday}</a>`
           } else if (resultMonday === '1') {
             resultMonday = String(resultMonday) + ' Punkt'
           } else {
             resultMonday = String(resultMonday) + ' Punkte'
           }
-          if (resultTuesday === 'noch nicht teilgenommen') {
+          if (resultTuesday === 'Jetzt teilnehmen!') {
             resultTuesday = `<a href="./tuesday.html">${resultTuesday}</a>`
           } else if (resultTuesday === '1') {
             resultTuesday = String(resultTuesday) + ' Punkt'
           } else {
             resultTuesday = String(resultTuesday) + ' Punkte'
           }
-          if (resultWednesday === 'noch nicht teilgenommen') {
+          if (resultWednesday === 'Jetzt teilnehmen!') {
             resultWednesday = `<a href="./wednesday.html">${resultWednesday}</a>`
           } else if (resultWednesday === '1') {
             resultWednesday = String(resultWednesday) + ' Punkt'
           } else {
             resultWednesday = String(resultWednesday) + ' Punkte'
           }
-          if (resultThursday === 'noch nicht teilgenommen') {
+          if (resultThursday === 'Jetzt teilnehmen!') {
             resultThursday = `<a href="./thursday.html">${resultThursday}</a>`
           } else if (resultThursday === '1') {
             resultThursday = String(resultThursday) + ' Punkt'
           } else {
             resultThursday = String(resultThursday) + ' Punkte'
           }
-          if (resultFriday === 'noch nicht teilgenommen') {
+          if (resultFriday === 'Jetzt teilnehmen!') {
             resultFriday = `<a href="./friday.html">${resultFriday}</a>`
           } else if (resultFriday === '1') {
             resultFriday = String(resultFriday) + ' Punkt'
@@ -501,12 +501,11 @@ function getResult(uploadData) {
 
           let messageText = ''
           if (
-            resultFiltered[0].ergebnisMontag !== 'noch nicht teilgenommen' &&
-            resultFiltered[0].ergebnisDienstag !== 'noch nicht teilgenommen' &&
-            resultFiltered[0].ergebnisMittwoch !== 'noch nicht teilgenommen' &&
-            resultFiltered[0].ergebnisDonnerstag !==
-              'noch nicht teilgenommen' &&
-            resultFiltered[0].ergebnisFreitag !== 'noch nicht teilgenommen'
+            resultFiltered[0].ergebnisMontag !== 'Jetzt teilnehmen!' &&
+            resultFiltered[0].ergebnisDienstag !== 'Jetzt teilnehmen!' &&
+            resultFiltered[0].ergebnisMittwoch !== 'Jetzt teilnehmen!' &&
+            resultFiltered[0].ergebnisDonnerstag !== 'Jetzt teilnehmen!' &&
+            resultFiltered[0].ergebnisFreitag !== 'Jetzt teilnehmen!'
           ) {
             const points = currentDay.split(' ')
             messageText = `Du hast <b>${points[0]}</b> Fragen richtig beantwortet.</br></br>Das sind deine Ergebnisse:</br><b>Montag:</b> ${resultMonday}</br><b>Dienstag:</b> ${resultTuesday}</br><b>Mittwoch:</b> ${resultWednesday}</br><b>Donnerstag:</b> ${resultThursday}</br><b>Freitag:</b> ${resultFriday}</br></br>Glüchwunsch, du hast an allen 5 Quiz erfolgreich teilgenommen und dir dadurch insgesamt <b>${resultFiltered[0].extraKapital} €</b> extra Kapital für das Börsenspiel erarbeitet!`
