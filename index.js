@@ -236,6 +236,15 @@ function closeModal() {
 
 //Diese Funktion überprüft anhand der Tabelle Alle Benutzer, ob der Benutzer schon einmal an dem Quiz teilgenommen hat
 function checkIfUserAlreadyDidQuiz() {
+  closeModal()
+  showModal({
+    art: 'warten',
+    messageText: 'Bitte warte kurz, deine Antworten werden ausgewertet',
+    button1Show: false,
+    button1Text: '',
+    button2Show: false,
+    button2Text: '',
+  })
   const formData = new FormData(form)
   const data = Object.fromEntries(formData)
   let datum = new Date().toLocaleString('de-De', {
@@ -333,15 +342,6 @@ function checkIfUserAlreadyDidQuiz() {
 
 //Wenn der Benutzer noch nicht teilgenommen hat, werden seine Antworten hochgeladen
 function uploadAnswers(uploadData) {
-  closeModal()
-  showModal({
-    art: 'warten',
-    messageText: 'Bitte warte kurz, deine Antworten werden ausgewertet',
-    button1Show: false,
-    button1Text: '',
-    button2Show: false,
-    button2Text: '',
-  })
   let indexKeys = 0
   if (day === 'Montag') {
     indexKeys = 1
