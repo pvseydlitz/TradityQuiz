@@ -260,6 +260,7 @@ function checkIfUserAlreadyDidQuiz() {
   data.benutzername = data.benutzername.toLowerCase().trim()
   let uploadData = { data: data }
   const benutzer = uploadData.data.benutzername
+  const benutzerEmail = uploadData.data.email
   let indexKeys = 0
   if (day === 'Montag') {
     indexKeys = 1
@@ -280,11 +281,12 @@ function checkIfUserAlreadyDidQuiz() {
       res
         .json()
         .then((data) => {
-          console.log(data)
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === benutzer
           )
-          console.log(resultFilteredByBenutzer)
+          let resultFilteredByEmail = data.data.filter(
+            (zeilen) => zeilen.email === benutzerEmail
+          )
           let dayLinks = [
             {
               day: 'Montag',
@@ -309,11 +311,14 @@ function checkIfUserAlreadyDidQuiz() {
           ]
           dayLinks = dayLinks.filter((object) => object.day !== day)
 
-          if (resultFilteredByBenutzer.length > 0) {
+          if (
+            resultFilteredByBenutzer.length > 0 ||
+            resultFilteredByEmail.length > 0
+          ) {
             closeModal()
             showModal({
               art: 'nutzername vergeben',
-              messageText: `Mit diesem Benutzernamen wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
+              messageText: `Mit diesem Benutzerdaten wurde das Quiz für <b>${day}</b> schon einmal absolviert. Hier gelangst du zu den Quiz der anderen Tage: 
               <a href="${dayLinks[0].link}">${dayLinks[0].day}</a>&nbsp;&nbsp;<a href="${dayLinks[1].link}">${dayLinks[1].day}</a>&nbsp;&nbsp;<a href="${dayLinks[2].link}">${dayLinks[2].day}</a>&nbsp;&nbsp;
               <a href="${dayLinks[3].link}">${dayLinks[3].day}</a>`,
               button1Show: false,
@@ -383,6 +388,7 @@ function uploadAnswers(uploadData) {
 function insertUser(uploadData) {
   let data = {}
   data.benutzername = uploadData.data.benutzername
+  data.email = uploadData.data.email
   let dataToUpload = { data: data }
 
   fetch(
