@@ -162,6 +162,15 @@ function setHTML(fragenDaten) {
       }
     }
   })
+  showModal({
+    art: 'hochladen',
+    messageText:
+      'Die Education Week ist am Sonntag 7.02.21 um 18 Uhr abgelaufen. Deswegen wird dir dein erspielter Bonus nicht mehr gutgeschrieben für das Börsenspiel.',
+    button1Show: false,
+    button1Text: '',
+    button2Show: true,
+    button2Text: 'Hinweis schließen',
+  })
 }
 
 //Bei Klick auf den Submit Button wird das Modal zur Bestätigung angezeigt
