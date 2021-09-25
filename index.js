@@ -217,7 +217,8 @@ function showModal({
   document.body.classList.add('confirm-alert-body-element')
   document.body.appendChild(modal)
 
-  /* const overlay = document.querySelector('.confirm-alert-overlay')
+  /* Modal lässt sich schließen, wenn man außerhalb des weißen Kasten klickt
+  const overlay = document.querySelector('.confirm-alert-overlay')
   if (art !== 'warten') {
     overlay.addEventListener('click', (event) => {
       if (overlay === event.target) {
@@ -410,6 +411,7 @@ function insertUser(uploadData) {
           let resultFilteredByBenutzer = data.data.filter(
             (zeilen) => zeilen.benutzername === dataToUpload.data.benutzername
           )
+          //Der Benutzer wird nur in die Tabelle Alle Benutzer eingetragen, wenn er dort noch nicht steht
           if (resultFilteredByBenutzer.length === 0) {
             fetch(`https://api.apispreadsheets.com/data/${keys[6].id}/`, {
               method: 'POST',
@@ -472,6 +474,7 @@ function getResult(uploadData) {
           } else {
             resultMonday = String(resultMonday) + ' Punkte'
           }
+
           if (resultTuesday === 'Jetzt teilnehmen!') {
             resultTuesday = `<a href="./tuesday.html">${resultTuesday}</a>`
           } else if (resultTuesday === '1') {
@@ -479,6 +482,7 @@ function getResult(uploadData) {
           } else {
             resultTuesday = String(resultTuesday) + ' Punkte'
           }
+
           if (resultWednesday === 'Jetzt teilnehmen!') {
             resultWednesday = `<a href="./wednesday.html">${resultWednesday}</a>`
           } else if (resultWednesday === '1') {
@@ -486,6 +490,7 @@ function getResult(uploadData) {
           } else {
             resultWednesday = String(resultWednesday) + ' Punkte'
           }
+
           if (resultThursday === 'Jetzt teilnehmen!') {
             resultThursday = `<a href="./thursday.html">${resultThursday}</a>`
           } else if (resultThursday === '1') {
@@ -493,6 +498,7 @@ function getResult(uploadData) {
           } else {
             resultThursday = String(resultThursday) + ' Punkte'
           }
+
           if (resultFriday === 'Jetzt teilnehmen!') {
             resultFriday = `<a href="./friday.html">${resultFriday}</a>`
           } else if (resultFriday === '1') {
